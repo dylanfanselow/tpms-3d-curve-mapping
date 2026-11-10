@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "TPMS 3D Curve Mapping: curve networks on analytic TPMS level sets"
+abstract: >-
+  MATLAB tools for 3D curve mapping on triply periodic minimal surface (TPMS)
+  lattices, currently implemented for the gyroid. They trace lines of curvature
+  and asymptotic curves directly on the analytic level set and report
+  curve-network metrics (straightness,
+  direction memory, loop closure, geodesic curvature, torsion and handedness),
+  together with wall thickness, solid fraction and surface-to-volume ratio as
+  functions of the level-set value.
+type: software
+authors:
+  - family-names: "YOUR-FAMILY-NAME"
+    given-names: "YOUR-GIVEN-NAME"
+version: 0.2.0
+license: GPL-3.0-or-later
+repository-code: "https://github.com/dylanfanselow/tpms-3d-curve-mapping"
+keywords:
+  - TPMS
+  - gyroid
+  - 3D curve mapping
+  - lattice structures
+  - additive manufacturing
+  - differential geometry
+  - lines of curvature
+  - MATLAB
