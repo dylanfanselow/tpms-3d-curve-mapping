@@ -8,12 +8,13 @@ abstract: >-
   curve-network metrics (straightness,
   direction memory, loop closure, geodesic curvature, torsion and handedness),
   together with wall thickness, solid fraction and surface-to-volume ratio as
-  functions of the level-set value.
+  functions of the level-set value, and lattice Wagner and inverse Damkohler
+  numbers for electroplating.
 type: software
 authors:
   - family-names: "YOUR-FAMILY-NAME"
     given-names: "YOUR-GIVEN-NAME"
-version: 0.2.0
+version: 0.3.0
 license: GPL-3.0-or-later
 repository-code: "https://github.com/dylanfanselow/tpms-3d-curve-mapping"
 keywords:
@@ -25,3 +26,4 @@ keywords:
   - differential geometry
   - lines of curvature
   - MATLAB
+  - electroplating

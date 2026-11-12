@@ -10,6 +10,7 @@
 %   gyroid_summary.md                  START HERE: plain-language numbers per t, with meanings
 %   gyroid_summary.csv / _detail.csv   the same as tables (detail has 95% CIs)
 %   gyroid_t_vs_wall_thickness.csv     t -> wall thickness, solid fraction, S/V lookup
+%   gyroid_electroplating.csv          t -> lattice Wagner / inverse Damkohler numbers (ranking only)
 %   gyroid_curve_descriptors_PCA.csv   one row per t, PCA-role descriptors only
 %   gyroid_curve_descriptors_long.csv  every descriptor, every role, with notes
 %   gyroid_curve_checks.csv            numerical checks per t and family
@@ -74,6 +75,24 @@ cfg.overhangDeg    = 45;           % downward-facing overhang threshold
 cfg.thicknessTGrid = 0:0.05:1.4;   % fine t grid for the t -> wall thickness table
 cfg.vfGrid         = 128;          % voxel grid for volume fractions
 
+% electroplating descriptors (Clemens et al., ACS Appl. Eng. Mater. 2025, 3(3), 600-612)
+% Reconstructed equations: use to RANK designs, not as absolute predictions (~1.5x).
+% Process values are PLACEHOLDERS from the paper -- replace with your own bath.
+% Set cfg.plating = [] to skip. Needs cfg.cellSize.
+cfg.plating.N_field     = 4;       % cells along the current direction (toward the anode);
+                                   % plated from several sides -> depth from the nearest exposed face
+cfg.plating.N_flow      = 8;       % cells along the electrolyte flow direction
+cfg.plating.T           = 298;     % bath temperature [K]
+cfg.plating.alpha_c     = 0.485;   % cathodic charge-transfer coefficient (from the bath's Tafel slope)
+cfg.plating.kappa       = 6.4;     % electrolyte conductivity [S/m]
+cfg.plating.i_avg       = 3.5;     % average current density [A/m^2] (3.5 A/m^2 = 0.35 mA/cm^2)
+cfg.plating.n           = 2;       % electrons per ion (2 for Cu, Ni)
+cfg.plating.C_o         = 10;      % bulk metal-ion concentration [mol/m^3]
+cfg.plating.v           = [];      % mean electrolyte velocity through the lattice [m/s]; [] = unknown
+cfg.plating.WaTarget    = 1;       % target Wagner number for the max-current ("speed limit") output
+cfg.plating.DaInvTarget = [440 2280]; % Da^-1 targets for the required-flow output (strut-lattice
+                                   % thresholds from the paper: Octet 440 ... simple cubic 2280)
+
 % validation
 cfg.validate      = true;
 cfg.validation_t  = 0.3;           % non-zero so the inversion-symmetry check is active
@@ -123,13 +142,22 @@ fprintf('Wall thickness / volume fraction table ... '); tic;
 tAll  = unique(round([cfg.thicknessTGrid(:); cfg.tList(:)]*1e9)/1e9).';
 thick = tpms_wall_thickness(fld, tAll, cfg);
 fprintf('%.1f s\n', toc);
+plat = tpms_electroplating(thick, cfg);          % [] if no cell size or no plating config
 Ms = cell(1, numel(results));
 for k = 1:numel(results)
     ik = find(abs([thick.t] - results(k).t) < 1e-8, 1);
-    Ms{k} = tpms_summary_metrics(results(k), thick(ik), cfg);
+    if isempty(plat), pk = []; else, pk = plat(ik); end
+    Ms{k} = tpms_summary_metrics(results(k), thick(ik), cfg, pk);
 end
-thickFine = thick(ismember(round([thick.t]*1e9), round(cfg.thicknessTGrid*1e9)));
-sfiles = tpms_write_summary(Ms, [results.t], thickFine, cfg);
+fine = ismember(round([thick.t]*1e9), round(cfg.thicknessTGrid*1e9));
+thickFine = thick(fine);
+if isempty(plat)
+    platFine = [];
+else
+    platFine = plat(fine);
+    tpms_electroplating(thickFine, cfg, fullfile(cfg.outDir, 'gyroid_electroplating.csv'));
+end
+sfiles = tpms_write_summary(Ms, [results.t], thickFine, cfg, platFine);
 if cfg.makePlots
     try
         tpms_plot_summary(Ms, [results.t], thickFine, cfg);

@@ -29,6 +29,7 @@ From these it reports plain-language metrics, for example:
 | Turning radius and twist pitch | How sharply the curves steer and corkscrew, in mm |
 | Handedness index | Whether twisting is balanced or biased left/right; point curvature can't see this |
 | Wall thickness, solid fraction, S/V | What the level-set value t physically does to the part |
+| Lattice Wagner and inverse Damköhler numbers | How evenly the lattice electroplates, and how much electrolyte flow it needs (for ranking designs) |
 
 Each curve-based number comes with a 95% confidence interval, so it is clear how trustworthy it is.
 
@@ -40,7 +41,18 @@ For a sheet gyroid with a 5 mm cell, as the level-set value t rises from 0 to 0.
 - Min-bending lines go from never closing to 100% closed loops.
 - The handedness index rises from 0.00 (balanced) to 0.17, revealing the gyroid's chirality.
 
-The full output from this run is in [`examples/results/gyroid_summary.md`](examples/results/gyroid_summary.md).
+The full output from this run is in [`examples/results/gyroid_summary.md`](examples/results/gyroid_summary.md). The example outputs predate the electroplating descriptors (v0.2.0); run the script to generate them.
+
+## Electroplating descriptors
+
+From the lattice's porosity, wetted surface area and cell size, the tool computes lattice versions of two dimensionless numbers after Clemens et al., *ACS Appl. Eng. Mater.* 2025, 3(3), 600–612 ([doi:10.1021/acsaenm.4c00561](https://doi.org/10.1021/acsaenm.4c00561)):
+
+- **Wagner number (Wa):** coating uniformity. High means the interior plates nearly as thick as the outside.
+- **Inverse Damköhler number (Da⁻¹):** ion supply by flow versus consumption by plating. Low means depletion, rough deposits and dendrites.
+
+From these it reports a maximum current density for a target uniformity and the electrolyte flow needed for a target Da⁻¹.
+
+The equations are reconstructed from the paper's definitions, so absolute values may be off by a constant (about 1.5×). **Use them to rank designs, not as absolute predictions.** The geometry-only parts work without any bath data, and the process inputs (placeholders from the paper) are set in `cfg.plating`. The core function, `src/tpms_plating_numbers.m`, takes porosity, surface area and cell size, so it also works for strut or STL-based lattices.
 
 ## Quick start
 
@@ -65,6 +77,7 @@ Other entry points:
 |---|---|
 | `gyroid_summary.md` / `.csv` | Plain-language metrics per t, with meanings and 95% confidence intervals |
 | `gyroid_t_vs_wall_thickness.csv` | t → wall thickness, solid fraction, surface-to-volume ratio |
+| `gyroid_electroplating.csv` | t → Wagner and inverse Damköhler numbers, max current, required flow |
 | `gyroid_curve_descriptors_PCA.csv` | Descriptors carrying genuinely new information, one row per t, ready for PCA |
 | `gyroid_curve_descriptors_long.csv` | Every descriptor, tagged by role (new, redundant, reference, …) |
 | `gyroid_curves_percurve.csv` | One row per traced curve |
@@ -72,14 +85,15 @@ Other entry points:
 
 ## Validation
 
-The run starts with 26 self-checks. They include:
+The run starts with 27 self-checks. They include:
 
 - symbolic vs hand-derived derivatives;
 - closed-form vs eigen-solved curvature;
 - analytic vs finite-difference geodesic curvature (second-order convergence confirmed);
 - known differential-geometry identities;
 - curves staying on the surface to about 1e-15;
-- cubic and inversion symmetry of the gyroid.
+- cubic and inversion symmetry of the gyroid;
+- self-consistency of the electroplating formulas.
 
 ## Repository layout
 

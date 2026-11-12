@@ -18,6 +18,9 @@ function V = tpms_validate(fld, cfg)
 %   8  Cubic symmetry: area-weighted orientation tensor of d1 = I/3
 %   9  Inversion symmetry x -> -x maps F=t to F=-t and swaps k1<->k2,
 %      asym+<->asym-: the field statistics must match across the swap
+%  10  Electroplating numbers: Wa and Da^-1 match the written formulas;
+%      Wa = WaTarget at i_avg = i_max; Da^-1 = target at v = v_min;
+%      geometric similarity (cell x2, a_v /2) halves Wa_geom, keeps Da_geom
 %
 %   Copyright (C) 2026 YOUR NAME
 %   SPDX-License-Identifier: GPL-3.0-or-later
@@ -119,6 +122,22 @@ if t ~= 0
         rep = addRow(rep, sprintf('9 inversion t<->-t  %s (median rel diff)', pairs{p,1}), d, d < 2e-2);
     end
 end
+
+% 10 -----------------------------------------------------------------------
+% tests the formulas with the paper's placeholder values, independent of cfg.plating
+pc = struct('N_field',4,'N_flow',8,'T',298,'alpha_c',0.485,'kappa',6.4,'i_avg',3.5, ...
+            'n',2,'C_o',10,'v',0.05,'WaTarget',1,'DaInvTarget',[440 2280]);
+e0 = 0.75; av0 = 1200; L0 = 0.005;
+P  = tpms_plating_numbers(e0, av0, L0, pc);
+VT = 8.314*pc.T/(pc.alpha_c*96485);
+WaRef = VT*pc.kappa*e0/(pc.i_avg*av0*(pc.N_field*L0)^2);
+DaRef = pc.n*96485*pc.v*pc.C_o/(pc.i_avg*av0*pc.N_flow*L0);
+q = pc; q.i_avg = P.i_max;   Pq = tpms_plating_numbers(e0, av0, L0, q);
+r = pc; r.v = P.v_min(1);    Pr = tpms_plating_numbers(e0, av0, L0, r);
+Ps = tpms_plating_numbers(e0, av0/2, 2*L0, pc);
+eP = max(abs([P.Wa/WaRef - 1, P.DaInv/DaRef - 1, Pq.Wa/pc.WaTarget - 1, ...
+              Pr.DaInv/pc.DaInvTarget(1) - 1, Ps.Wa_geom/P.Wa_geom - 0.5, Ps.Da_geom/P.Da_geom - 1]));
+rep = addRow(rep, '10 electroplating numbers self-consistency (max rel)', eP, eP < 1e-12);
 
 % report ---------------------------------------------------------------------
 fprintf('\n==== Validation (gyroid, t = %.3g) ====\n', t);

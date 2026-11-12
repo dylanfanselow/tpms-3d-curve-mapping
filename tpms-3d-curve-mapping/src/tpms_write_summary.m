@@ -1,4 +1,4 @@
-function files = tpms_write_summary(Ms, tList, thickFine, cfg)
+function files = tpms_write_summary(Ms, tList, thickFine, cfg, platFine)
 %TPMS_WRITE_SUMMARY  Human-readable summary of the curve mapping.
 %
 %   Ms        cell array, Ms{k} = tpms_summary_metrics(...) for tList(k)
@@ -9,11 +9,14 @@ function files = tpms_write_summary(Ms, tList, thickFine, cfg)
 %     gyroid_summary.csv              metric x t table (one number per cell, opens in Excel)
 %     gyroid_summary_detail.csv       same with 95% CI / ranges, long format
 %     gyroid_t_vs_wall_thickness.csv  t -> wall thickness, volume fraction, S/V lookup
+%   platFine (optional) tpms_electroplating on the same fine grid, for the
+%   electroplating table in the Markdown report
 %
 %   Copyright (C) 2026 YOUR NAME
 %   SPDX-License-Identifier: GPL-3.0-or-later
 %   See LICENSE in the repository root for the full license text.
 if ~exist(cfg.outDir, 'dir'), mkdir(cfg.outDir); end
+if nargin < 5, platFine = []; end
 keys = {Ms{1}.key};
 nT = numel(tList);
 if isempty(cfg.cellSize), uL = 'cell lengths'; else, uL = cfg.lengthUnit; end
@@ -73,7 +76,8 @@ fprintf(fid, ['**t** is the level-set value of the gyroid formula: raising it th
 fprintf(fid, ['Numbers in brackets are 95%% confidence intervals from resampling the traced curves ' ...
     '(narrow = trustworthy), except for wall thickness and bending radius, where they give the 5-95%% ' ...
     'spread over the surface. "> x" means longer than the longest distance checked.\n\n']);
-groups = {'structure', 'What t does to the part'; 'curves', 'How the surface curves behave'};
+groups = {'structure', 'What t does to the part'; 'curves', 'How the surface curves behave'; ...
+          'plating', 'Electroplating (for ranking designs, not absolute prediction)'};
 for g = 1:size(groups,1)
     sel = find(strcmp({Ms{1}.group}, groups{g,1}));
     if isempty(sel), continue; end
@@ -89,6 +93,7 @@ for g = 1:size(groups,1)
     fprintf(fid, '\n**What the metrics mean**\n\n');
     for k = sel, fprintf(fid, '- **%s**: %s\n', Ms{1}(k).label, Ms{1}(k).meaning); end
     fprintf(fid, '\n');
+    if strcmp(groups{g,1}, 'plating'), writePlatingNotes(fid, cfg); end
 end
 fprintf(fid, '## Choosing t for a target wall thickness (sheet)\n\n');
 fprintf(fid, '| t | Wall thickness (%s) | 5-95%% spread | Thickness / cell | Solid fraction |\n|---|---|---|---|---|\n', uL);
@@ -101,7 +106,43 @@ end
 fprintf(fid, ['\nRule of thumb: thickness = %.2f x t x cell size for t up to about 0.5; above that the exact ' ...
     'value grows faster. Use `tpms_t_for_thickness(target, cellSize)` for an exact inverse. The full table ' ...
     'is in `gyroid_t_vs_wall_thickness.csv`.\n'], ruleOfThumb(thickFine));
+if ~isempty(platFine)
+    pc = cfg.plating;
+    fprintf(fid, '\n## Electroplating numbers vs t (%s lattice, ranking only)\n\n', cfg.latticeType);
+    fprintf(fid, '| t | Porosity | a_v (1/m) | Wa_geom (1/m) | Wa | i_max for Wa >= %g (mA/cm2) |', pc.WaTarget);
+    for j = 1:numel(platFine(1).DaInvTarget), fprintf(fid, ' Flow for Da^-1 = %g (m/s) |', platFine(1).DaInvTarget(j)); end
+    fprintf(fid, '\n|---|---|---|---|---|---|%s\n', repmat('---|', 1, numel(platFine(1).DaInvTarget)));
+    for e = platFine
+        if abs(e.t/0.1 - round(e.t/0.1)) > 1e-9, continue; end
+        fprintf(fid, '| %.1f | %.0f%% | %s | %s | %s | %s |', e.t, 100*e.porosity, fmt(e.a_v), fmt(e.Wa_geom), ...
+            fmt(e.Wa), fmt(e.i_max/10));
+        fprintf(fid, ' %s |', strjoin(arrayfun(@fmt, e.v_min, 'UniformOutput', false), ' | '));
+        fprintf(fid, '\n');
+    end
+    fprintf(fid, '\nThe full table is in `gyroid_electroplating.csv`.\n');
+end
 fclose(fid);
+end
+
+% -------------------------------------------------------------------------
+function writePlatingNotes(fid, cfg)
+pc = cfg.plating;
+fprintf(fid, ['**Source and caveats.** Lattice Wagner and inverse Damkohler numbers after Clemens et al., ' ...
+    '*ACS Appl. Eng. Mater.* 2025, 3(3), 600-612, doi:10.1021/acsaenm.4c00561. The equations are ' ...
+    'reconstructed from the paper''s variable definitions: the scaling is right but absolute values may be ' ...
+    'off by a constant (about 1.5x). Use them to **rank designs**, not as absolute predictions. ' ...
+    'Wa predicts uniformity only when Da^-1 is high (enough flow); otherwise depletion dominates. ' ...
+    'The paper''s Da^-1 thresholds are for strut lattices; TPMS thresholds still need calibration.\n\n']);
+fprintf(fid, ['**Assumptions.** Tafel kinetics; uniform electrolyte conductivity; perfectly conductive ' ...
+    'substrate; convection-dominated ion supply. For a sheet lattice both faces are wetted.\n\n']);
+fprintf(fid, ['**Process inputs used** (placeholders from the paper unless you changed `cfg.plating`): ' ...
+    'T = %g K, alpha_c = %g, kappa = %g S/m, i_avg = %g mA/cm2, n = %g, C_o = %g mol/m^3, v = %s m/s, ' ...
+    'N_field = %g cells (toward the anode), N_flow = %g cells (along the flow).\n\n'], ...
+    pc.T, pc.alpha_c, pc.kappa, pc.i_avg/10, pc.n, pc.C_o, numOrNone(pc, 'v'), pc.N_field, pc.N_flow);
+end
+
+function s = numOrNone(pc, f)
+if isfield(pc, f) && ~isempty(pc.(f)), s = sprintf('%g', pc.(f)); else, s = 'not set'; end
 end
 
 % -------------------------------------------------------------------------

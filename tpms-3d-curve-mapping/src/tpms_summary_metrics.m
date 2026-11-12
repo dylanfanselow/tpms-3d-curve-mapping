@@ -1,9 +1,10 @@
-function M = tpms_summary_metrics(R, thick, cfg)
+function M = tpms_summary_metrics(R, thick, cfg, plat)
 %TPMS_SUMMARY_METRICS  A short list of plain-language numbers for one level set.
 %
 %   M = tpms_summary_metrics(R, thick, cfg)
 %     R      output of tpms_analyze_level
 %     thick  matching row of tpms_wall_thickness (or [] to skip structure metrics)
+%     plat   matching row of tpms_electroplating (optional; [] or omitted to skip)
 %
 %   M is a struct array with fields
 %     key, label, unit, value, lo, hi, rangeType ('CI95' | 'P5-P95' | ''), meaning, group
@@ -24,6 +25,7 @@ if isempty(cfg.cellSize)
 else
     lam = R.lambda; uL = cfg.lengthUnit;
 end
+if nargin < 4, plat = []; end
 if isfield(cfg, 'nBoot'), B = cfg.nBoot; else, B = 400; end
 if isfield(cfg, 'latticeType'), lt = cfg.latticeType; else, lt = 'sheet'; end
 M = struct('key',{},'label',{},'unit',{},'value',{},'lo',{},'hi',{},'rangeType',{},'meaning',{},'group',{});
@@ -120,6 +122,35 @@ if ~isempty(pa)
     add('asym_imbalance', 'Zero-bending families imbalance', '-1..+1', ...
         (sM.median - sP.median)/(sM.median + sP.median), NaN, NaN, '', ...
         'Difference between the two mirror-image families of zero-bending lines; 0 when the part is mirror-balanced.', 'curves');
+end
+
+% ---------------- electroplating (ranking only) -------------------------------
+if ~isempty(plat)
+    pc = cfg.plating;
+    add('plating_Wa_geom', 'Wagner number, geometry part', '1/m', plat.Wa_geom, NaN, NaN, '', ...
+        ['Geometry-only uniformity factor eps/(a_v (N_field L)^2): compare designs without bath data. ' ...
+         'Higher = more even coating.'], 'plating');
+    if isfinite(plat.Wa)
+        add('plating_Wa', sprintf('Lattice Wagner number at %.3g mA/cm2', pc.i_avg/10), '-', plat.Wa, NaN, NaN, '', ...
+            ['Coating uniformity. High = interior plates nearly as thick as the outside; low = current ' ...
+             'crowds onto the faces nearest the anode (paper: Octet 0.86 ~2x, IsoTruss 0.24 ~4.6x top-to-bottom).'], 'plating');
+    end
+    if isfinite(plat.i_max)
+        add('plating_i_max', sprintf('Max current density for Wa >= %g', pc.WaTarget), 'mA/cm2', plat.i_max/10, NaN, NaN, '', ...
+            'Plating "speed limit": the highest average current that still meets the target uniformity.', 'plating');
+    end
+    if isfinite(plat.DaInv)
+        add('plating_DaInv', sprintf('Inverse Damkohler number at %g m/s flow', pc.v), '-', plat.DaInv, NaN, NaN, '', ...
+            ['Ion delivery by flow vs consumption by plating. High = surface stays near bulk concentration; ' ...
+             'low = depletion, rough deposits, dendrites at nodes.'], 'plating');
+    end
+    for j = 1:numel(plat.DaInvTarget)
+        if ~isfinite(plat.v_min(j)), continue; end
+        add(sprintf('plating_v_min_%d', j), sprintf('Flow needed for Da^-1 = %g', plat.DaInvTarget(j)), 'm/s', ...
+            plat.v_min(j), NaN, NaN, '', sprintf(['Mean electrolyte velocity through the lattice needed to reach ' ...
+            'Da^-1 = %g (strut-lattice thresholds for >= 90%% of bulk concentration range from 440, Octet, ' ...
+            'to 2280, simple cubic; the TPMS threshold is not yet calibrated).'], plat.DaInvTarget(j)), 'plating');
+    end
 end
 
 % ---------------- build direction --------------------------------------------

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0
+
+### Added
+- Electroplating descriptors after Clemens et al., *ACS Appl. Eng. Mater.* 2025, 3(3), 600–612. These use reconstructed equations and are for ranking designs only.
+  - Lattice Wagner number (coating uniformity) and inverse Damköhler number (depletion and dendrite risk).
+  - Geometry-only parts (Wa_geom, Da_geom) for ranking without bath data.
+  - Maximum current density for a target Wa, and the electrolyte flow needed for target Da⁻¹ values.
+  - New `gyroid_electroplating.csv`, an electroplating section in `gyroid_summary.md`, and the `cfg.plating` settings with placeholder bath values from the paper.
+  - `src/tpms_plating_numbers.m` takes porosity, wetted area and cell size, so it also works for strut and STL-based lattices.
+- Validation check 10: self-consistency of the electroplating formulas.
+
 ## 0.2.0
 
 ### Added

@@ -124,6 +124,81 @@ The thickness is the distance between the two faces measured along the mid-surfa
 
   The default of 96 gives about ±4–6% on those last two, which their confidence intervals in the summary show.
 
+## Electroplating descriptors (v0.3)
+
+Lattice Wagner and inverse Damköhler numbers after Clemens et al., *ACS Appl. Eng. Mater.* 2025, 3(3), 600–612, doi:10.1021/acsaenm.4c00561. The equation images were unavailable, so the equations below are reconstructed from the paper's variable definitions. The scaling is right, but absolute values may be off by a constant (about 1.5× when checked). **Use them to rank designs, not as absolute predictions.**
+
+**Lattice Wagner number (coating uniformity).** The ratio of surface-reaction resistance to electrolyte resistance:
+
+  Wa = (R T / (α_c F)) · κ · ε / (i_avg · a_v · (N_field L)²)
+
+- **High Wa:** current spreads evenly.
+- **Low Wa:** current crowds onto the outer faces nearest the anode. In the paper, Octet had Wa = 0.86 at 0.35 mA/cm² with about 2× top-to-bottom thickness variation; IsoTruss had 0.24 at 1.4 mA/cm² with about 4.6×.
+
+**Lattice inverse Damköhler number (depletion and dendrite risk).** The rate at which flow delivers metal ions versus the rate plating consumes them:
+
+  Da⁻¹ ∝ n F v C_o / (i_avg · a_v · N_flow L)
+
+The exact prefactor is uncertain and probably includes a factor like n/α_c. The paper's thresholds for keeping the surface concentration at ≥ 90% of bulk, for strut lattices with ε = 0.84, N_field = 4 and N_flow = 8, were:
+
+| Lattice | Da⁻¹ threshold |
+|---|---|
+| Simple cubic | 2280 |
+| FCC | 920 |
+| BCC | 800 |
+| IsoTruss | 600 |
+| Octet | 440 |
+
+TPMS thresholds are unknown and need calibration. Wa predicts uniformity only when Da⁻¹ is high; otherwise depletion dominates.
+
+**What the code computes.** In `tpms_plating_numbers.m`, first the geometry-only parts, so designs can be ranked without bath data:
+
+- Wa_geom = ε / (a_v (N_field L)²), in 1/m
+- Da_geom = 1 / (a_v N_flow L), dimensionless
+
+Then, given process inputs:
+
+- Wa = Wa_geom · (R T/(α_c F)) · κ / i_avg
+- Da⁻¹ = Da_geom · n F v C_o / i_avg
+- **Speed limit:** i_max = (R T/(α_c F)) · κ · Wa_geom / Wa_target
+- **Required flow:** v_min = Da⁻¹_target · i_avg / (Da_geom n F C_o), for each target in `cfg.plating.DaInvTarget` (default 440 and 2280, spanning the strut thresholds)
+
+**Geometry inputs.**
+
+- **Sheet lattice:** ε = 1 − solid fraction and a_v = 2A / cell volume, because both channel systems are open to the electrolyte.
+- **Network lattice:** ε = 1 − solid fraction and a_v = A / cell volume.
+
+A and the solid fractions come from `tpms_wall_thickness`. **N_field** is the number of cells toward the anode; if the part is plated from several sides, use the depth from the nearest exposed face. **N_flow** is the number of cells along the flow direction.
+
+**Process inputs.** These are placeholders from the paper; replace them with your own bath values in `cfg.plating`:
+
+| Input | Value |
+|---|---|
+| T | 298 K |
+| α_c | 0.485 |
+| κ | 6.4 S/m |
+| n | 2 |
+| C_o | 10 mol/m³ |
+| i_avg | 0.35 mA/cm² |
+| v | not set |
+
+**Assumptions:** Tafel kinetics; uniform electrolyte conductivity, with no tortuosity correction beyond ε; a perfectly conductive substrate; convection-dominated ion supply.
+
+**Gyroid results** (5 mm cell, N_field = 4, N_flow = 8, placeholder bath):
+
+| t | Porosity (sheet) | a_v sheet (1/m) | Wa_geom (1/m) | Wa at 0.35 mA/cm² | i_max for Wa = 1 (mA/cm²) | Flow for Da⁻¹ = 440 / 2280, sheet (m/s) |
+|---|---|---|---|---|---|---|
+| 0.2 | 87% | 1228 | 1.77 | 0.172 | 0.060 | 0.039 / 0.20 |
+| 0.4 | 74% | 1200 | 1.55 | 0.150 | 0.052 | 0.038 / 0.20 |
+| 0.8 | 48% | 1075 | 1.11 | 0.108 | 0.038 | 0.034 / 0.18 |
+| 1.2 | 20% | 778 | 0.64 | 0.062 | 0.022 | 0.025 / 0.13 |
+
+What these show:
+
+- **Thicker walls plate less evenly.** Wa falls with t, because porosity drops faster than surface area.
+- **Sheet and network gyroids at the same t have identical Wa.** The network's void is exactly one of the sheet's two channels: half the porosity and half the wetted area, so ε/a_v is unchanged. The sheet needs twice the flow for the same Da⁻¹, because twice as much surface consumes ions.
+- **Absolute comparisons with the paper's strut lattices are not possible here,** because their cell sizes and surface areas aren't in the reconstructed equations. Compare designs within the same model.
+
 ## Conventions
 
 - **Normal.** n = ∇F/|∇F| (fixed global orientation).
@@ -160,6 +235,9 @@ Most of the new information turns out to be fields computable at every surface p
 - independent verification of the analytic κ_g.
 
 ## Validation (all pass; see `tpms_validate.m`)
+
+Check 10 (added in v0.3) verifies that the electroplating numbers match their formulas, that Wa equals the target at i_max and Da⁻¹ equals the target at v_min, and that scaling the cell size by 2 with a_v halved halves Wa_geom and leaves Da_geom unchanged.
+
 
 1. **Derivatives.** Symbolic and hand-derived derivatives agree exactly.
 2. **Curvatures.** Eigen-solve K and H agree with the closed-form level-set formulas to about 1e-15.
