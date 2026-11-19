@@ -16,7 +16,7 @@ function TT = tpms_wall_thickness(fld, tGrid, cfg)
 %     thick_firstorder_mean, thick_mean_cell, thick_fail_frac,
 %     vf_sheet, vf_network       solid volume fractions (0..1)
 %     area_per_cell              area of ONE surface F = t in one cell
-%     area_density_sheet         2*area / cell volume     (1/length)
+%     area_density_sheet         (area(F=t) + area(F=-t)) / cell volume  (1/length)
 %     area_density_network       area / cell volume
 %     SV_sheet, SV_network       surface / SOLID volume   (1/length)
 %
@@ -26,7 +26,7 @@ function TT = tpms_wall_thickness(fld, tGrid, cfg)
 
 if isempty(cfg.cellSize), lam = 1; else, lam = cfg.cellSize/(2*pi); end
 if isfield(cfg, 'vfGrid'), nv = cfg.vfGrid; else, nv = 128; end
-L = 2*pi;
+Pv = tpms_period3(fld.period); L = Pv(1);      % [2pi 2pi 2pi] for a cubic cell
 
 % mid-surface for thickness
 S0 = tpms_surface_sample(fld, 0, cfg.nGrid);
@@ -34,10 +34,11 @@ g0 = fld.grad(S0.v); gn0 = sqrt(sum(g0.^2, 2)); n0 = g0 ./ gn0;
 w0 = S0.w;
 
 % voxel-centre grid for volume fractions (F evaluated once)
-c  = ((1:nv) - 0.5) * L / nv;
-[X, Y, Z] = ndgrid(c, c, c);
+nvv = round(nv * Pv / (2*pi));                % = nv on every axis for a cube
+[X, Y, Z] = ndgrid(((1:nvv(1)) - 0.5) * Pv(1) / nvv(1), ((1:nvv(2)) - 0.5) * Pv(2) / nvv(2), ...
+                   ((1:nvv(3)) - 0.5) * Pv(3) / nvv(3));
 Fv = fld.F0([X(:) Y(:) Z(:)]);
-Vc = L^3;
+if all(Pv == L), Vc = L^3; else, Vc = prod(Pv); end
 
 TT = struct([]);
 for k = 1:numel(tGrid)
@@ -66,10 +67,19 @@ for k = 1:numel(tGrid)
     catch
         A = 0;                                  % no surface at this t
     end
+    if t > 0                                    % sheet: both faces; they differ for
+        try                                     % unbalanced surfaces (I-WP, F-RD, ...)
+            Am = tpms_surface_sample(fld, -t, cfg.nGrid).A;
+        catch
+            Am = 0;
+        end
+    else
+        Am = A;
+    end
     r.area_per_cell        = A*lam^2;
-    r.area_density_sheet   = 2*A/Vc/lam;
+    r.area_density_sheet   = (A + Am)/Vc/lam;
     r.area_density_network = A/Vc/lam;
-    r.SV_sheet   = ifpos(r.vf_sheet,   2*A/(r.vf_sheet*Vc)/lam);
+    r.SV_sheet   = ifpos(r.vf_sheet,   (A + Am)/(r.vf_sheet*Vc)/lam);
     r.SV_network = ifpos(r.vf_network, A/(r.vf_network*Vc)/lam);
     if isempty(TT), TT = r; else, TT(end+1) = r; end %#ok<AGROW>
 end

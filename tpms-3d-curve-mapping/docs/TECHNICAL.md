@@ -67,6 +67,166 @@ Outputs go to `cfg.outDir`, which defaults to `results/gyroid_curve_results/` in
 - `…_percurve.csv` has one row per curve: length, stop reasons, closure, lattice translation, closure gap.
 - The `.mat` file holds the curves and surface samples.
 
+## TPMS library mapping (v0.5)
+
+`src/tpms_library.m` holds 56 entries describing 54 distinct level-set lattices. For each it records the equation, kind (minimal or not), literature genus per primitive cell (where verified), source and notes.
+
+**Sources** (checked November 2026):
+
+- **[B26]** M. Bernhard, "The Josehedron", arXiv:2604.07160 (2026). Table 6 gives the formulas used by the Axolotl plugin; Table 7 gives a 45-formula community collection by Rhino/Grasshopper user "corax".
+- **nTop** block documentation.
+- **[G01]** Gandy, Bardhan, Mackay & Klinowski, *Chem. Phys. Lett.* 336 (2001) 187–195.
+- **[W01]** Wohlgemuth, Yufa, Hoffman & Thomas, *Macromolecules* 34 (2001) 6083–6089.
+- **[F23]** J. W. Fisher, S. W. Miller, J. Bartolai, T. W. Simpson & M. A. Yukish, "Catalog of triply periodic minimal surfaces, equation-based lattice structures, and their homogenized property data", *Data in Brief* 49 (2023) 109311. The equations are taken from the catalog's MATLAB surface files (github.com/jwf23/Equation-Based-Lattice-Structure-Dataset).
+- **[V24]** A. Vasile et al., *Materials* 17 (2024) 5150, Table 1 (S-series).
+- **Original surface papers:** Schoen, NASA TN D-5541 (1970); Fischer & Koch, *Z. Kristallogr.* 179 (1987) 31–52; Lidin & Larsson, *J. Chem. Soc. Faraday Trans.* 86 (1990) 769–775.
+
+- **[SG99]** U. S. Schwarz & G. Gompper, arXiv:cond-mat/9903406, Table II (nodal approximations).
+- **[HV20]** MiniSurf (Hsieh & Valdevit, *Software Impacts* 6 (2020) 100026), source code on GitHub.
+- **[LM03]** E. A. Lord & A. L. Mackay, *Current Science* 85 (2003) 346–362, Table 1 (genus per primitive cell, derived from its Euler-characteristic column: S 11, C(Y) 13, C(D) 19, C(P) 9, P 3, D 3).
+
+**Duplicate check** (`tpms_library_duplicates`, run at the start of every library run). Two equations describe the same lattice if F_b(f·(Q·x + t)) = c·F_a(x), where:
+
+- Q is a cubic rotation or reflection (48);
+- t is a translation in multiples of π/4 (512);
+- c is any non-zero scale;
+- f is 1 or 2 (frequency 2 = the same lattice at half the cell size).
+
+The check runs in two stages:
+
+1. **Screen.** Compare the distribution of F/std(F) at 200,000 random points, which none of these transformations changes. Random points matter: a regular grid aliases doubled-frequency equations, so a grid-based screen missed one.
+2. **Exact test.** Try every transformation on the pairs that pass (residual < 1e-8).
+
+Findings:
+
+- **Duplicates already in the library:** D's alternative form equals D shifted by (π/4)(1,1,1) and scaled by −1.41. Double Diamond 2 equals Double Diamond 1 shifted by (π/2)(1,1,1). Both are now marked `duplicateOf` and skipped.
+- **Candidates rejected during the literature search:**
+  - [SG99]'s D (D shifted);
+  - [SG99]'s C(D) (algebraically identical to the existing C(D), which confirms that transcription);
+  - MiniSurf's Double Diamond (Double Diamond 1 × 0.5);
+  - Axolotl's Double Diamond (Double Diamond 1 at doubled frequency).
+- **Added:** [SG99]'s C(P) form (genus 9 ✓, but less minimal than Neovius: 0.26 vs 0.12), MiniSurf's Double Gyroid with offset −0.95, Axolotl's FRP (chiral) and KP. KP's formula is partly garbled in the source PDF, and the reading used is far from minimal, so treat it as uncertain.
+- **Sources with no usable equations:** Lord & Mackay's 24 surfaces (Batwing, Manta and others) were built with Surface Evolver and have no published nodal equations. Tetragonal and hexagonal surfaces (Schwarz CLP and H, Schoen's H′-T) need non-cubic cells, which the code does not support.
+
+**Fisher et al. vs corax.** Wherever [F23] differs from the corax collection, the [F23] version is the better approximation:
+
+| Surface | Minimality: [F23] | Minimality: corax | Note |
+|---|---|---|---|
+| G′ | 0.04 | 0.41 | |
+| D′ | 0.33 | 0.47 | [F23] also much smoother |
+| C(Y) | 0.14 | 0.14 | [F23] smoothness 0.59 vs 0.13 |
+| P+C(P) | 0.20 | 0.29 | |
+
+The [F23] forms are the main entries; the corax forms are kept as labelled variants.
+
+Where sources disagree, each variant is its own entry: F-RD (4- and 8-term), Split P, OCTO and Double Primitive.
+
+`run_tpms_library.m` analyses each surface at t = 0 with a 5 mm cell, a 96-point grid (160 for genus refinement), 48 seeds and the two line-of-curvature families. It saves each lattice as it finishes and can be resumed (`cfg.resume`, `cfg.timeBudget`). The full run takes about 15 minutes in Octave.
+
+**Checks** (`tpms_library_check.m`):
+
+- **Genus.** The box genus comes from Gauss–Bonnet: ∫K dA = 2πχ, and genus = 1 − χ/2. It is divided by the number of translations (multiples of π/4) with F(x + t) = F(x), giving the genus per primitive cell quoted in the literature. Translations with F(x + t) = −F(x) also map the surface onto itself but swap its sides; they are reported as "sides congruent" and excluded, because they give a non-orientable quotient. A non-integer box genus is recomputed on the finer grid.
+  - **Matches (13 of 16, including tP, tD, tG = 3 from the non-cubic add-on):** P 3, D 3, G 3, Neovius 9, C(P) [SG99] 9, I-WP 4, F-RD 6 (both forms), Fischer–Koch S 11, C(Y) [F23] 13.
+  - **Mismatches:** the nodal Lidinoid (17 vs 3); corax's C(Y) (21 vs 13: it is not C(Y)); C(D) (inconclusive at 31.1 vs 19).
+  - **Lidinoid:** the published nodal equation, identical in Wikipedia, nTop and Axolotl, gives one connected surface (checked separately with periodic connected-component labelling) of genus 17 per primitive cell. The true Lidinoid has genus 3. Together with its minimality of 0.60, this means the nodal equation does not reproduce the Lidinoid's topology.
+  - **Inconclusive at grid 160:** C(D) and D′ remain non-integer.
+- **Minimality.** Median |H| ÷ median curvedness. This separates good approximations (D, G 0.02; Fischer–Koch S 0.07; C-PMY, G′2 0.07–0.08) from poor ones. It also chooses between published variants:
+  - Split P: 0.14 (nTop/Axolotl) vs 0.39 (corax);
+  - OCTO: 0.25 (Axolotl) vs 0.50 (corax);
+  - G Prime: 0.08 (G′2) vs 0.41 (G′1).
+- **Smoothness** (min |∇F| ÷ median |∇F|). The F surface (three families of planes) and the W surface are singular and are not analysed.
+- **Broken surfaces.** A negative box genus means the zero set breaks into closed pieces. This happens for Axolotl's Double Primitive form and for the Tubular Diamond as written; the source mentions a π/4 shift it omits. Both are excluded from the rankings.
+
+**Electroplating at matched solid fraction.** At t = 0 a sheet has zero wall thickness, so `tpms_library_plating.m` compares lattices at the same solid fraction (`cfg.platingSolidFraction`, default 0.16, the porosity of the paper's reference strut lattices).
+
+- **Finding t.** For a sheet, t is that quantile of |F| over the cell; for a network, that quantile of F.
+- **Geometry at that t.** `tpms_wall_thickness` gives the porosity, the wetted area (both faces of a sheet, measured separately because they differ for unbalanced surfaces) and the mean wall thickness.
+- **Plating numbers.** `tpms_plating_numbers` gives Wa (at 0.35 mA/cm²), Da⁻¹ (at a reference flow of 0.05 m/s), the maximum current for Wa ≥ 1 and the flow needed for Da⁻¹ = 440.
+
+At equal porosity both Wa and Da⁻¹ scale as 1/a_v, so they rank lattices identically: less wetted surface per volume means a more even coating *and* less flow needed. In a 5 mm cell at 16% solid, most sheet walls are 0.25–0.38 mm thick. Tubular lattices have no single wall, so their thickness is reported as n/a.
+
+**Curvedness-change length** (median curvedness ÷ median |∇_s C|). This replaces the core curvature-change length (based on the mean-curvature gradient) in the ranking. For a minimal surface H = 0, so the gradient of H only measures the nodal-approximation error.
+
+**Extremeness** is the mean |z| over curvedness-change length, turning radius and the two straightnesses, across the valid lattices (49 of the 54 distinct ones).
+
+**Handedness** at t = 0 acts as a chirality flag. It is non-zero (CI excluding 0, |h| ≥ 0.02) for Fischer–Koch Y and C(Y), the Tubular Gyroid and both Bionic Bones; the last three thicken one gyroid channel.
+
+**Scale.** All lattices share one cell size (the literature convention X = 2πx/L), so higher-frequency surfaces have more surface per cell and smaller radii. The turning ÷ bending ratio removes this scale effect.
+
+## Non-cubic cells (v0.6 add-on)
+
+Non-cubic TPMS can still be written as trig level-set functions; what changes is the repeating box.
+
+- **Tetragonal and orthorhombic cells** are rectangular boxes with a different period per axis, for example cos(x) + cos(y) + cos(z/r) with period 2πr along z.
+- **Hexagonal cells** use the rectangular "orthohexagonal" box a × a√3 × c, which holds two hexagonal cells.
+
+Equations are written in Cartesian (physical) coordinates, so the geometry (curvatures, curve tracing, Codazzi/Liouville) is exact and unchanged.
+
+**How it is added without touching the baseline.**
+
+- **`fld.period`** is either the scalar 2π (cubic, as before) or a 3-vector. `tpms_period3` turns either into [Px Py Pz].
+- **Every former 2π-cube assumption now uses that vector:**
+  - surface sampling, seeding and closure detection;
+  - straightness unrolling;
+  - the genus translation search (steps of P/8, which is π/4 for a cube);
+  - the wall-thickness and plating voxel grids;
+  - the duplicate check, which only compares lattices with the same box and only allows box-preserving axis swaps.
+
+  A cube follows exactly the same arithmetic as before.
+- **Separate files:** non-cubic entries live in `tpms_library_noncubic.m`, so `tpms_library.m` is unchanged. `tpms_library_all` merges the two, adding `period` ([] = cubic) and `cell` to every entry.
+- **Proof:** the full gyroid pipeline gives byte-identical outputs before and after the change (8 CSV files). A five-lattice cubic library run (Gyroid, I-WP, Fischer–Koch S, Tubular G, Neovius) matches the previous code exactly on all 46 metric columns. The only change to the CSV is a `cell` column appended at the end.
+
+**Entries.**
+
+| Entry | Cell | Box (× 2π) | Source | Genus / primitive | Minimality |
+|---|---|---|---|---|---|
+| Lonsdaleite | hexagonal (orthohexagonal box) | 1 × √3 × 1.633 | Seeber 2021 (Schröder-Turk group), Fourier approximation | 5 (no literature value) | 0.16 |
+| tP | tetragonal | 1 × 1 × 1.5 | Fischer & Koch 1988 tP family; P nodal form | 3 ✓ | 0.23 |
+| tD | tetragonal | 1 × 1 × 1.5 | tD family; D nodal form | 3 ✓ | 0.08 |
+| tG | tetragonal | 1 × 1 × 1.5 | tG family; G nodal form | 3 ✓ | 0.19 |
+
+**Checking the Lonsdaleite reading.** The source gives its Fourier series in a rectangular cell, with c/a = 1.633 taken from its Surface Evolver file. Reading the coordinates with y scaled by 1/√3 and z by 1/1.633 gives minimality 0.16. Every alternative reading (no scaling, or only one of the two) gives about 0.25, which supports this interpretation. The source itself cautions that its Lonsdaleite models did not all agree.
+
+**Caveats.**
+
+- **The tetragonal entries are illustrative.** They are cubic nodal forms in a stretched cell at one chosen c/a, not fits to the exact tP/tD/tG minimal surfaces, and other ratios are a one-line change.
+- **One-length conventions.** For non-cubic cells the straightness window and "area per cell" use the length a along x, and the cubic-symmetry check does not apply.
+
+**Q\* correction.** An earlier version of this document attributed Q\*'s failure to a hexagonal equation sampled in a cube. Q\* is in fact periodic over the 2π cube; its t = 0 level set is genuinely singular, so it stays a cubic entry flagged as singular.
+
+## Core and extended descriptor sets (v0.4)
+
+The default `cfg.descriptorSet = 'core'` keeps five curvature descriptors as PCA inputs and in the summary:
+
+| Core descriptor | Summary metric | Why it is in the core |
+|---|---|---|
+| `field_gradH` | Curvature-change length = median curvedness ÷ median \|∇H\| | Curvature variation (3rd derivatives). A surface field, so no seed dependence. |
+| `field_kg_LoC` | Sideways turning radius = 1 / median \|κ_g\| | Geodesic curvature of both line-of-curvature families, pooled. A surface field. |
+| `curve_k1_straight` | Max-bending lines: straightness | Largest signal across t (0.44 → 0.05). Precise with about 40 seeds. |
+| `curve_k2_straight` | Min-bending lines: straightness | The opposite family (0.44 → 0.64). Precise with about 40 seeds. |
+| `handedness_LoC` | Handedness index | The only chirality measure. Precise with about 40 seeds. |
+
+`cfg.coreBuildAlignment = true` adds `field_d1_build`, the build-direction alignment of the max-bending direction.
+
+Everything else is still computed and written to `gyroid_curve_descriptors_long.csv` with role `EXTENDED`:
+
+| Extended descriptors | Why they left the core |
+|---|---|
+| All asymptotic-curve descriptors | Little variation; need many seeds; undefined where K > 0 |
+| Torsion distributions | Twist magnitude needs about 320 seeds; the sign is kept in handedness |
+| Direction memory | Overlaps with straightness |
+| Singular-end fractions, mean curve length | Depend on tracing settings |
+| \|∇K\|, d2 alignment, cubic anisotropy A4 | Overlap with \|∇H\| or d1, or barely vary for a cubic lattice |
+| Split k1/k2 geodesic-curvature fields | Replaced by the pooled field |
+
+**Seeds.** With the core set, the sampling study (`examples/sampling_study/`) recommends **48 seeds**, the default since v0.4. The seeds needed for a ±0.02 confidence interval are 35 for handedness, 21 for k1 straightness and 1 for k2 straightness. The two surface-field metrics don't depend on seeds at all. Raise `cfg.nSeeds` to about 100–450 only if you need precise extended curve metrics (see the v0.2 numbers below).
+
+**Run-time option.** The asymptotic families feed only extended descriptors. Setting `cfg.families = {'k1','k2'}` makes runs about 30% faster, and the core results are unchanged.
+
+**Full mode.** `cfg.descriptorSet = 'full'` restores every PCA-role descriptor from v0.3, plus `handedness_LoC`, for 30 in total. In the summary, the turning radius is then shown both as the surface-field value and as the curve-sampled value.
+
+**Caveat.** The core set was chosen by reasoning and the sampling study, not by a correlation analysis. With only the gyroid varying in t, almost every descriptor tracks t, so a correlation analysis would call everything redundant. Revisit the choice once other TPMS types or blends are added.
+
 ## Summary for people
 
 Each metric in `gyroid_summary.md` has a plain name, a unit, one value per t, a trend ("rises 45%") and a one-line meaning. Lengths are in your cell-size unit. Brackets show 95% confidence intervals from resampling the traced curves (a narrow interval means the number is trustworthy). For wall thickness and bending radius, the brackets instead give the 5–95% spread over the surface.
@@ -110,7 +270,7 @@ Above t ≈ 1.35 the normal rays start missing the opposite face because the she
 
 The thickness is the distance between the two faces measured along the mid-surface normal. A maximal-inscribed-sphere thickness (as used by some CT software) would read slightly smaller where the wall is curved.
 
-## Sampling study results (t = 0.4)
+## Sampling study results for the full metric set (v0.2, t = 0.4)
 
 - **Grid and step size:** the coarsest tested settings (nGrid 32, step ×2) already pass. Results don't depend on them.
 - **Number of seeds:** this matters only for metrics that are medians over individual curves. Seeds needed for a ±3% interval (±10 points for loop shares, ±0.02 for 0–1 metrics):

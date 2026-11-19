@@ -38,7 +38,7 @@ function C = tpms_trace_curves(fld, t, seeds, family, opt)
 %   See LICENSE in the repository root for the full license text.
 
 isLoC = any(strcmp(family, {'k1','k2'}));
-L     = fld.period;
+L     = tpms_period3(fld.period);   % [Px Py Pz]
 M     = size(seeds,1);
 nH    = 2*M;
 X0    = [seeds; seeds];
@@ -115,7 +115,7 @@ while any(act)
     % closure: distance from the seed (modulo the lattice) to the whole step
     % segment, so detection does not depend on where the nodes happen to land
     dx    = x(ic,:) - X0(ic,:);
-    shift = L*round(dx/L);
+    shift = L.*round(dx./L);
     dprev = xa(lc,:) - X0(ic,:) - shift;
     seg   = x(ic,:) - xa(lc,:);
     tseg  = max(0, min(1, -sum(dprev.*seg, 2) ./ max(sum(seg.^2, 2), eps)));
@@ -123,7 +123,7 @@ while any(act)
     near  = dw < opt.closeTol & s(ic) > opt.minLoop ...
             & sum(T(ic,:).*T0(ic,:), 2) > 0.98 & ~sing;
     status(ic(near)) = {'closed'};
-    trans(ic(near),:) = round(dx(near,:)/L);
+    trans(ic(near),:) = round(dx(near,:)./L);
     cgap(ic(near)) = dw(near);
 
     longE = s(ic) >= opt.Lmax & ~sing & ~near;

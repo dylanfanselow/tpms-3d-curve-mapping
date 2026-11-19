@@ -9,6 +9,12 @@ function M = tpms_summary_metrics(R, thick, cfg, plat)
 %   M is a struct array with fields
 %     key, label, unit, value, lo, hi, rangeType ('CI95' | 'P5-P95' | ''), meaning, group
 %
+%   cfg.descriptorSet = 'core' (default) reports the lean curvature set: curvature-
+%   change length and turning radius (surface fields), straightness of both
+%   line-of-curvature families and the handedness index (plus build alignment if
+%   cfg.coreBuildAlignment). 'full' adds direction memory, loop shares, twist
+%   pitch, the asymptotic-curve metrics and build alignment.
+%
 %   Curve-based numbers carry a 95% bootstrap confidence interval obtained by
 %   resampling whole curves (cfg.nBoot resamples). It shows how much the number
 %   would move if a different set of curves had been traced: a wide interval
@@ -65,6 +71,18 @@ if strcmp(lt, 'sheet'), ov = (dn + up)/2; else, ov = dn; end
 add('downskin', sprintf('Downward-facing overhang (> %g deg)', cfgval(cfg,'overhangDeg',45)), '%', 100*ov, NaN, NaN, '', ...
     'Share of surface facing downward more steeply than the overhang limit (typically the roughest in AM).', 'structure');
 
+% ---------------- surface-field curvature metrics (no tracing) ------------------
+isFull = isfield(cfg, 'descriptorSet') && strcmpi(cfg.descriptorSet, 'full');
+gH = tpms_wstats(sqrt(sum(R.G.gradS_H.^2, 2)), R.S.w);
+add('curv_change_length', 'Curvature-change length', uL, lam*sC.median/gH.median, NaN, NaN, '', ...
+    ['How far you move along the surface before its bending changes by about its own typical amount ' ...
+     '(typical curvature / typical mean-curvature gradient). Short = rapidly varying curvature.'], 'curves');
+wU = R.S.w .* (R.G.gap >= R.opt.umbExcl);
+kgF = tpms_wstats([abs(R.G.kg1); abs(R.G.kg2)], [wU; wU]);
+add('turning_radius', 'Bending lines: sideways turning radius', uL, lam/kgF.median, NaN, NaN, '', ...
+    ['Typical radius of the sideways turns the lines of curvature make within the surface ' ...
+     '(small = sharp steering). Evaluated over the whole surface, so no sampling noise.'], 'curves');
+
 % ---------------- lines of curvature ----------------------------------------
 pk1 = getPC(R, 'k1'); pk2 = getPC(R, 'k2');
 for fam = {'k1','k2'}
@@ -75,6 +93,7 @@ for fam = {'k1','k2'}
     [m, lo, hi] = bootStat(@(i) nmed(v(i)), numel(v), B);
     add([key '_straightness'], [nice ': straightness over 1 cell'], '0-1', m, lo, hi, 'CI95', ...
         '1 = runs straight, 0 = comes back to where it started. Net progress per distance travelled.', 'curves');
+    if ~isFull, continue; end                       % extended metrics below
     A = R.acc.(key);
     [m, lo, hi] = bootStat(@(i) tpms_persistence(A.lags, sum(A.sum(i,:),1), sum(A.cnt(i,:),1)), size(A.sum,1), B);
     [m, lo, hi, rt] = censor(m, lo, hi, A.lags(end));
@@ -87,13 +106,15 @@ for fam = {'k1','k2'}
 end
 pLoC = [pk1, pk2];
 if ~isempty(pLoC)
-    kgv = [pLoC.median_abs_kg]; tav = [pLoC.median_abs_tau];
-    [m, lo, hi] = bootStat(@(i) 1/nmed(kgv(i)), numel(kgv), B);
-    add('turning_radius', 'Bending lines: sideways turning radius', uL, m*lam, lo*lam, hi*lam, 'CI95', ...
-        'Typical radius of the sideways turns the lines make within the surface (small = sharp steering).', 'curves');
-    [m, lo, hi] = bootStat(@(i) 2*pi/nmed(tav(i)), numel(tav), B);
-    add('twist_pitch', 'Bending lines: twist pitch', uL, m*lam, lo*lam, hi*lam, 'CI95', ...
-        'Distance along a line for one full corkscrew twist (small = strongly twisted).', 'curves');
+    if isFull
+        kgv = [pLoC.median_abs_kg]; tav = [pLoC.median_abs_tau];
+        [m, lo, hi] = bootStat(@(i) 1/nmed(kgv(i)), numel(kgv), B);
+        add('turning_radius_curves', 'Bending lines: turning radius (curve-sampled)', uL, m*lam, lo*lam, hi*lam, 'CI95', ...
+            'Same as the turning radius, but as the median over traced curves (biased by curve density).', 'curves');
+        [m, lo, hi] = bootStat(@(i) 2*pi/nmed(tav(i)), numel(tav), B);
+        add('twist_pitch', 'Bending lines: twist pitch', uL, m*lam, lo*lam, hi*lam, 'CI95', ...
+            'Distance along a line for one full corkscrew twist (small = strongly twisted).', 'curves');
+    end
     % NOTE: the length-weighted MEAN torsion of a line of curvature telescopes
     % (tau = -dphi/ds) and is ~0 for any long curve, so handedness is measured
     % as (length twisting +) - (length twisting -), normalised.
@@ -106,7 +127,7 @@ end
 
 % ---------------- asymptotic curves ----------------------------------------
 pa = [getPC(R,'asymP'), getPC(R,'asymM')];
-if ~isempty(pa)
+if isFull && ~isempty(pa)
     v = [pa.straight1];
     [m, lo, hi] = bootStat(@(i) nmed(v(i)), numel(v), B);
     add('asym_straightness', 'Zero-bending lines: straightness over 1 cell', '0-1', m, lo, hi, 'CI95', ...
@@ -154,9 +175,11 @@ if ~isempty(plat)
 end
 
 % ---------------- build direction --------------------------------------------
-add('bend_dir_vertical', 'Max-bending direction near vertical (< 30 deg)', '%', ...
-    100*sc('areafrac_d1_near_build'), NaN, NaN, '', ...
-    'Share of surface whose sharpest bend runs close to the build direction (13.4% if directions were random).', 'curves');
+if isFull || (isfield(cfg, 'coreBuildAlignment') && cfg.coreBuildAlignment)
+    add('bend_dir_vertical', 'Max-bending direction near vertical (< 30 deg)', '%', ...
+        100*sc('areafrac_d1_near_build'), NaN, NaN, '', ...
+        'Share of surface whose sharpest bend runs close to the build direction (13.4% if directions were random).', 'curves');
+end
 end
 
 % -------------------------------------------------------------------------

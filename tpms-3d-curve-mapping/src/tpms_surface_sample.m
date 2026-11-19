@@ -16,9 +16,9 @@ function S = tpms_surface_sample(fld, t, nGrid)
 %   SPDX-License-Identifier: GPL-3.0-or-later
 %   See LICENSE in the repository root for the full license text.
 if nargin < 3 || isempty(nGrid), nGrid = 64; end
-L  = fld.period;
-gv = linspace(0, L, nGrid);
-[X, Y, Z] = meshgrid(gv, gv, gv);
+P  = tpms_period3(fld.period);                 % [2pi 2pi 2pi] for a cubic cell
+ng = round(nGrid * P / (2*pi));               % = nGrid on every axis for a cube
+[X, Y, Z] = meshgrid(linspace(0, P(1), ng(1)), linspace(0, P(2), ng(2)), linspace(0, P(3), ng(3)));
 V = reshape(fld.F0([X(:) Y(:) Z(:)]), size(X));
 [f, v] = isosurface(X, Y, Z, V, t);
 if isempty(f)

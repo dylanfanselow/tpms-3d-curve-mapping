@@ -1,6 +1,6 @@
 # Gyroid curve-mapping summary
 
-Lattice: **sheet** gyroid, cell size **5 mm**. Build direction [0  0  1]. Generated 2026-10-20 00:45.
+Lattice: **sheet** gyroid, cell size **5 mm**. Build direction [0  0  1]. Generated 2026-11-16 05:48.
 
 **t** is the level-set value of the gyroid formula: raising it thickens the sheet walls (or, for a network lattice, adds material to one side). Each column below is one t value.
 
@@ -30,35 +30,43 @@ Numbers in brackets are 95% confidence intervals from resampling the traced curv
 
 | Metric | Unit | t = 0.00 | t = 0.20 | t = 0.40 | t = 0.60 | t = 0.80 | Trend |
 |---|---|---|---|---|---|---|---|
-| Max-bending lines (k1): straightness over 1 cell | 0-1 | 0.44 [0.435, 0.446] | 0.353 [0.349, 0.364] | 0.254 [0.247, 0.265] | 0.143 [0.133, 0.157] | 0.047 [0.0377, 0.0503] | falls 89% |
-| Max-bending lines (k1): direction memory | mm | 1.35 [1.35, 1.36] | 1.24 [1.24, 1.24] | 1.12 [1.12, 1.13] | 1 [1, 1.01] | 0.872 [0.87, 0.875] | falls 36% |
-| Max-bending lines (k1): share forming closed loops | % | 0 | 0 | 0 | 0 | 0 | steady |
-| Min-bending lines (k2): straightness over 1 cell | 0-1 | 0.441 [0.436, 0.444] | 0.505 [0.5, 0.506] | 0.552 [0.551, 0.554] | 0.6 [0.599, 0.6] | 0.641 [0.641, 0.642] | rises 45% |
-| Min-bending lines (k2): direction memory | mm | 1.35 [1.35, 1.36] | 1.47 [1.47, 1.47] | 1.58 [1.58, 1.58] | 1.7 [1.7, 1.7] | 1.83 [1.82, 1.83] | rises 35% |
-| Min-bending lines (k2): share forming closed loops | % | 0 | 0 | 67.7 [57.3, 76.0] | 97.9 [94.8, 100] | 100 | rises from 0 to 100 |
-| Bending lines: sideways turning radius | mm | 5.45 [5.34, 5.59] | 5.42 [5.26, 5.53] | 5.3 [5.13, 5.48] | 5.09 [5.02, 5.19] | 5 [4.95, 5.05] | falls 8% |
-| Bending lines: twist pitch | mm | 8.63 [8.27, 9.14] | 8.4 [7.95, 9.13] | 7.98 [7.71, 8.34] | 8.35 [8.19, 8.44] | 7.66 [7.49, 7.97] | falls 11% |
-| Handedness index | -1..+1 | 0.002 [-0.0133, 0.0148] | 0.0725 [0.0595, 0.0853] | 0.125 [0.113, 0.138] | 0.147 [0.139, 0.153] | 0.169 [0.166, 0.172] | rises from 0.002 to 0.169 |
-| Zero-bending lines: straightness over 1 cell | 0-1 | 0.932 [0.932, 0.933] | 0.933 [0.932, 0.934] | 0.933 [0.93, 0.935] | 0.93 [0.928, 0.933] | 0.94 [0.938, 0.941] | steady |
-| Zero-bending lines: direction memory | mm | 6.41 [6.38, 6.44] | 6.75 [6.49, 7.03] | 7.55 [7.1, 8.03] | 9.35 [8.65, 9.89] | > 9.99 | rises 56% |
-| Zero-bending families imbalance | -1..+1 | 0 | 0.0917 | 0.181 | 0.248 | 0.292 | rises from 0 to 0.292 |
-| Max-bending direction near vertical (< 30 deg) | % | 9.14 | 10.1 | 10.8 | 11.4 | 11.5 | rises 26% |
+| Curvature-change length | mm | 11.4 | 10.5 | 8.61 | 6.82 | 5.32 | falls 53% |
+| Bending lines: sideways turning radius | mm | 4.63 | 4.56 | 4.44 | 4.24 | 3.94 | falls 15% |
+| Max-bending lines (k1): straightness over 1 cell | 0-1 | 0.441 [0.434, 0.449] | 0.358 [0.352, 0.373] | 0.265 [0.252, 0.272] | 0.141 [0.128, 0.163] | 0.0426 [0.0369, 0.0506] | falls 90% |
+| Min-bending lines (k2): straightness over 1 cell | 0-1 | 0.444 [0.435, 0.449] | 0.505 [0.499, 0.507] | 0.553 [0.552, 0.554] | 0.6 [0.599, 0.601] | 0.641 [0.641, 0.642] | rises 45% |
+| Handedness index | -1..+1 | 0.001 [-0.0207, 0.0249] | 0.067 [0.0487, 0.086] | 0.115 [0.0961, 0.13] | 0.147 [0.136, 0.159] | 0.17 [0.165, 0.174] | rises from 0.001 to 0.17 |
 
 **What the metrics mean**
 
+- **Curvature-change length**: How far you move along the surface before its bending changes by about its own typical amount (typical curvature / typical mean-curvature gradient). Short = rapidly varying curvature.
+- **Bending lines: sideways turning radius**: Typical radius of the sideways turns the lines of curvature make within the surface (small = sharp steering). Evaluated over the whole surface, so no sampling noise.
 - **Max-bending lines (k1): straightness over 1 cell**: 1 = runs straight, 0 = comes back to where it started. Net progress per distance travelled.
-- **Max-bending lines (k1): direction memory**: How far a line runs before it has "forgotten" its starting direction.
-- **Max-bending lines (k1): share forming closed loops**: Lines that close on themselves, e.g. rings around struts.
 - **Min-bending lines (k2): straightness over 1 cell**: 1 = runs straight, 0 = comes back to where it started. Net progress per distance travelled.
-- **Min-bending lines (k2): direction memory**: How far a line runs before it has "forgotten" its starting direction.
-- **Min-bending lines (k2): share forming closed loops**: Lines that close on themselves, e.g. rings around struts.
-- **Bending lines: sideways turning radius**: Typical radius of the sideways turns the lines make within the surface (small = sharp steering).
-- **Bending lines: twist pitch**: Distance along a line for one full corkscrew twist (small = strongly twisted).
 - **Handedness index**: Share of line length twisting right minus share twisting left. 0 = balanced (mirror-symmetric); +-1 = all one way. Point-curvature statistics cannot see this.
-- **Zero-bending lines: straightness over 1 cell**: Asymptotic curves: paths along which the surface does not bend. Near 1 = almost straight.
-- **Zero-bending lines: direction memory**: How far a zero-bending line runs before it has "forgotten" its starting direction ("> x" = longer than the longest lag checked).
-- **Zero-bending families imbalance**: Difference between the two mirror-image families of zero-bending lines; 0 when the part is mirror-balanced.
-- **Max-bending direction near vertical (< 30 deg)**: Share of surface whose sharpest bend runs close to the build direction (13.4% if directions were random).
+
+## Electroplating (for ranking designs, not absolute prediction)
+
+| Metric | Unit | t = 0.00 | t = 0.20 | t = 0.40 | t = 0.60 | t = 0.80 | Trend |
+|---|---|---|---|---|---|---|---|
+| Wagner number, geometry part | 1/m | 2.02 | 1.77 | 1.55 | 1.33 | 1.11 | falls 45% |
+| Lattice Wagner number at 0.35 mA/cm2 | - | 0.196 | 0.172 | 0.15 | 0.128 | 0.108 | falls 45% |
+| Max current density for Wa >= 1 | mA/cm2 | 0.0685 | 0.0601 | 0.0524 | 0.0449 | 0.0376 | falls 45% |
+| Flow needed for Da^-1 = 440 | m/s | 0.0395 | 0.0392 | 0.0383 | 0.0367 | 0.0343 | falls 13% |
+| Flow needed for Da^-1 = 2280 | m/s | 0.205 | 0.203 | 0.199 | 0.19 | 0.178 | falls 13% |
+
+**What the metrics mean**
+
+- **Wagner number, geometry part**: Geometry-only uniformity factor eps/(a_v (N_field L)^2): compare designs without bath data. Higher = more even coating.
+- **Lattice Wagner number at 0.35 mA/cm2**: Coating uniformity. High = interior plates nearly as thick as the outside; low = current crowds onto the faces nearest the anode (paper: Octet 0.86 ~2x, IsoTruss 0.24 ~4.6x top-to-bottom).
+- **Max current density for Wa >= 1**: Plating "speed limit": the highest average current that still meets the target uniformity.
+- **Flow needed for Da^-1 = 440**: Mean electrolyte velocity through the lattice needed to reach Da^-1 = 440 (strut-lattice thresholds for >= 90% of bulk concentration range from 440, Octet, to 2280, simple cubic; the TPMS threshold is not yet calibrated).
+- **Flow needed for Da^-1 = 2280**: Mean electrolyte velocity through the lattice needed to reach Da^-1 = 2280 (strut-lattice thresholds for >= 90% of bulk concentration range from 440, Octet, to 2280, simple cubic; the TPMS threshold is not yet calibrated).
+
+**Source and caveats.** Lattice Wagner and inverse Damkohler numbers after Clemens et al., *ACS Appl. Eng. Mater.* 2025, 3(3), 600-612, doi:10.1021/acsaenm.4c00561. The equations are reconstructed from the paper's variable definitions: the scaling is right but absolute values may be off by a constant (about 1.5x). Use them to **rank designs**, not as absolute predictions. Wa predicts uniformity only when Da^-1 is high (enough flow); otherwise depletion dominates. The paper's Da^-1 thresholds are for strut lattices; TPMS thresholds still need calibration.
+
+**Assumptions.** Tafel kinetics; uniform electrolyte conductivity; perfectly conductive substrate; convection-dominated ion supply. For a sheet lattice both faces are wetted.
+
+**Process inputs used** (placeholders from the paper unless you changed `cfg.plating`): T = 298 K, alpha_c = 0.485, kappa = 6.4 S/m, i_avg = 0.35 mA/cm2, n = 2, C_o = 10 mol/m^3, v = not set (Da^-1 not computed), N_field = 4 cells (toward the anode), N_flow = 8 cells (along the flow).
 
 ## Choosing t for a target wall thickness (sheet)
 
@@ -80,3 +88,25 @@ Numbers in brackets are 95% confidence intervals from resampling the traced curv
 | 1.4 | 2.05 (unreliable: sheet near breakup) | 1.71-2.26 | 0.411 | 96% |
 
 Rule of thumb: thickness = 0.21 x t x cell size for t up to about 0.5; above that the exact value grows faster. Use `tpms_t_for_thickness(target, cellSize)` for an exact inverse. The full table is in `gyroid_t_vs_wall_thickness.csv`.
+
+## Electroplating numbers vs t (sheet lattice, ranking only)
+
+| t | Porosity | a_v (1/m) | Wa_geom (1/m) | Wa | i_max for Wa >= 1 (mA/cm2) | Flow for Da^-1 = 440 (m/s) | Flow for Da^-1 = 2280 (m/s) |
+|---|---|---|---|---|---|---|---|
+| 0.0 | 100% | 1237 | 2.02 | 0.196 | 0.0685 | 0.0395 | 0.205 |
+| 0.1 | 94% | 1235 | 1.89 | 0.183 | 0.0642 | 0.0394 | 0.204 |
+| 0.2 | 87% | 1228 | 1.77 | 0.172 | 0.0601 | 0.0392 | 0.203 |
+| 0.3 | 81% | 1217 | 1.66 | 0.161 | 0.0562 | 0.0388 | 0.201 |
+| 0.4 | 74% | 1200 | 1.55 | 0.15 | 0.0524 | 0.0383 | 0.199 |
+| 0.5 | 68% | 1179 | 1.44 | 0.139 | 0.0487 | 0.0376 | 0.195 |
+| 0.6 | 61% | 1151 | 1.33 | 0.128 | 0.0449 | 0.0367 | 0.19 |
+| 0.7 | 54% | 1117 | 1.22 | 0.118 | 0.0413 | 0.0356 | 0.185 |
+| 0.8 | 48% | 1075 | 1.11 | 0.108 | 0.0376 | 0.0343 | 0.178 |
+| 0.9 | 41% | 1023 | 1 | 0.0969 | 0.0339 | 0.0327 | 0.169 |
+| 1.0 | 34% | 960 | 0.886 | 0.0858 | 0.03 | 0.0306 | 0.159 |
+| 1.1 | 27% | 881 | 0.767 | 0.0742 | 0.026 | 0.0281 | 0.146 |
+| 1.2 | 20% | 778 | 0.635 | 0.0615 | 0.0215 | 0.0248 | 0.129 |
+| 1.3 | 12% | 636 | 0.484 | 0.0469 | 0.0164 | 0.0203 | 0.105 |
+| 1.4 | 4% | 387 | 0.288 | 0.0279 | 0.010 | 0.0124 | 0.0641 |
+
+The full table is in `gyroid_electroplating.csv`.

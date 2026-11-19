@@ -1,181 +1,85 @@
 t,factor,setting,key,metric,unit,value,ci_low,ci_high,deviation_from_finest,ci_halfwidth,deviation_unit,passes,run_seconds
-0.4,nSeeds,12,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,7.5
-0.4,nSeeds,12,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,7.5
-0.4,nSeeds,12,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.278468,0.246534,0.294819,0.01612,0.02414,abs,0,7.5
-0.4,nSeeds,12,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12977,1.12482,1.13485,0.3636,0.4457,%,1,7.5
-0.4,nSeeds,12,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,7.5
-0.4,nSeeds,12,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.549318,0.547971,0.552149,-0.003141,0.002089,abs,1,7.5
-0.4,nSeeds,12,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58098,1.57969,1.58231,-0.03855,0.08282,%,1,7.5
-0.4,nSeeds,12,k2_loops,"Min-bending lines (k2): share forming closed loops",%,25,8.33333,50,-40.62,20.83,points,0,7.5
-0.4,nSeeds,12,turning_radius,"Bending lines: sideways turning radius",mm,5.66783,5.31849,5.76385,4.512,4.106,%,0,7.5
-0.4,nSeeds,12,twist_pitch,"Bending lines: twist pitch",mm,7.97078,7.26864,9.54603,-2.597,13.91,%,0,7.5
-0.4,nSeeds,12,handedness,"Handedness index",-1..+1,0.100455,0.0645569,0.137023,-0.0153,0.03623,abs,0,7.5
-0.4,nSeeds,12,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.931628,0.929042,0.948007,-0.001376,0.009482,abs,1,7.5
-0.4,nSeeds,12,asym_memory,"Zero-bending lines: direction memory",mm,7.11878,5.95637,8.56113,-6.069,17.18,%,0,7.5
-0.4,nSeeds,12,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.181085,NaN,NaN,0,0,abs,1,7.5
-0.4,nSeeds,12,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.7818,NaN,NaN,0,0,points,1,7.5
-0.4,nSeeds,24,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,9.2
-0.4,nSeeds,24,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,9.2
-0.4,nSeeds,24,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.271259,0.263916,0.282803,0.008909,0.009444,abs,1,9.2
-0.4,nSeeds,24,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12927,1.12633,1.13232,0.3191,0.2661,%,1,9.2
-0.4,nSeeds,24,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,9.2
-0.4,nSeeds,24,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.551259,0.548753,0.553394,-0.0012,0.00232,abs,1,9.2
-0.4,nSeeds,24,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58168,1.58057,1.58253,0.005629,0.06178,%,1,9.2
-0.4,nSeeds,24,k2_loops,"Min-bending lines (k2): share forming closed loops",%,41.6667,25,62.5,-23.96,18.75,points,0,9.2
-0.4,nSeeds,24,turning_radius,"Bending lines: sideways turning radius",mm,5.57675,5.29545,5.73363,2.832,4.04,%,0,9.2
-0.4,nSeeds,24,twist_pitch,"Bending lines: twist pitch",mm,8.70814,7.91269,9.51452,6.414,9.787,%,0,9.2
-0.4,nSeeds,24,handedness,"Handedness index",-1..+1,0.105463,0.079556,0.132061,-0.01029,0.02625,abs,0,9.2
-0.4,nSeeds,24,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.932138,0.929042,0.942382,-0.0008672,0.00667,abs,1,9.2
-0.4,nSeeds,24,asym_memory,"Zero-bending lines: direction memory",mm,7.48354,6.62842,8.4491,-1.256,12.01,%,0,9.2
-0.4,nSeeds,24,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.181085,NaN,NaN,0,0,abs,1,9.2
-0.4,nSeeds,24,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.7818,NaN,NaN,0,0,points,1,9.2
-0.4,nSeeds,48,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,11.5
-0.4,nSeeds,48,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,11.5
-0.4,nSeeds,48,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.264595,0.250095,0.272327,0.002244,0.01112,abs,1,11.5
-0.4,nSeeds,48,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12619,1.12403,1.12852,0.04554,0.1996,%,1,11.5
-0.4,nSeeds,48,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,11.5
-0.4,nSeeds,48,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552886,0.551259,0.55383,0.0004274,0.001286,abs,1,11.5
-0.4,nSeeds,48,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58202,1.58123,1.58276,0.02746,0.04857,%,1,11.5
-0.4,nSeeds,48,k2_loops,"Min-bending lines (k2): share forming closed loops",%,66.6667,54.1667,77.0833,1.042,11.46,points,0,11.5
-0.4,nSeeds,48,turning_radius,"Bending lines: sideways turning radius",mm,5.2269,5.11619,5.48517,-3.619,3.402,%,0,11.5
-0.4,nSeeds,48,twist_pitch,"Bending lines: twist pitch",mm,8.35409,8.02336,8.82595,2.087,4.904,%,0,11.5
-0.4,nSeeds,48,handedness,"Handedness index",-1..+1,0.114744,0.0972191,0.133723,-0.001008,0.01825,abs,1,11.5
-0.4,nSeeds,48,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.93273,0.928737,0.937951,-0.0002751,0.004607,abs,1,11.5
-0.4,nSeeds,48,asym_memory,"Zero-bending lines: direction memory",mm,7.55221,6.78877,8.18202,-0.3502,9.192,%,0,11.5
-0.4,nSeeds,48,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.181085,NaN,NaN,0,0,abs,1,11.5
-0.4,nSeeds,48,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.7818,NaN,NaN,0,0,points,1,11.5
-0.4,nSeeds,96,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,18.4
-0.4,nSeeds,96,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,18.4
-0.4,nSeeds,96,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.253666,0.247986,0.26473,-0.008684,0.008372,abs,1,18.4
-0.4,nSeeds,96,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12446,1.12283,1.12621,-0.108,0.1502,%,1,18.4
-0.4,nSeeds,96,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,18.4
-0.4,nSeeds,96,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552345,0.550748,0.553683,-0.0001144,0.001467,abs,1,18.4
-0.4,nSeeds,96,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58153,1.58098,1.58207,-0.003499,0.0345,%,1,18.4
-0.4,nSeeds,96,k2_loops,"Min-bending lines (k2): share forming closed loops",%,67.7083,59.375,77.0833,2.083,8.854,points,1,18.4
-0.4,nSeeds,96,turning_radius,"Bending lines: sideways turning radius",mm,5.30439,5.13712,5.47109,-2.19,3.079,%,0,18.4
-0.4,nSeeds,96,twist_pitch,"Bending lines: twist pitch",mm,7.97614,7.67349,8.20262,-2.531,3.233,%,0,18.4
-0.4,nSeeds,96,handedness,"Handedness index",-1..+1,0.125371,0.112745,0.137056,0.009619,0.01216,abs,1,18.4
-0.4,nSeeds,96,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.93273,0.929772,0.935442,-0.0002751,0.002835,abs,1,18.4
-0.4,nSeeds,96,asym_memory,"Zero-bending lines: direction memory",mm,7.54651,7.12731,8.10305,-0.4254,6.437,%,0,18.4
-0.4,nSeeds,96,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.181085,NaN,NaN,0,0,abs,1,18.4
-0.4,nSeeds,96,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.7818,NaN,NaN,0,0,points,1,18.4
-0.4,nSeeds,160,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,24.4
-0.4,nSeeds,160,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,24.4
-0.4,nSeeds,160,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.26235,0.252473,0.269596,0,0.008562,abs,1,24.4
-0.4,nSeeds,160,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12568,1.12437,1.1268,0,0.1079,%,1,24.4
-0.4,nSeeds,160,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,24.4
-0.4,nSeeds,160,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552459,0.550749,0.553631,0,0.001441,abs,1,24.4
-0.4,nSeeds,160,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58159,1.5812,1.58202,0,0.02599,%,1,24.4
-0.4,nSeeds,160,k2_loops,"Min-bending lines (k2): share forming closed loops",%,65.625,57.5,73.125,0,7.813,points,1,24.4
-0.4,nSeeds,160,turning_radius,"Bending lines: sideways turning radius",mm,5.42316,5.31874,5.51178,0,1.78,%,1,24.4
-0.4,nSeeds,160,twist_pitch,"Bending lines: twist pitch",mm,8.18326,7.83806,8.53489,0,4.258,%,0,24.4
-0.4,nSeeds,160,handedness,"Handedness index",-1..+1,0.115752,0.10552,0.125106,0,0.009793,abs,1,24.4
-0.4,nSeeds,160,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.933005,0.929945,0.936557,0,0.003306,abs,1,24.4
-0.4,nSeeds,160,asym_memory,"Zero-bending lines: direction memory",mm,7.57875,7.21492,7.96651,0,4.959,%,0,24.4
-0.4,nSeeds,160,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.181085,NaN,NaN,0,0,abs,1,24.4
-0.4,nSeeds,160,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.7818,NaN,NaN,0,0,points,1,24.4
-0.4,nGrid,32,surface_bend_radius,"Typical surface bending radius",mm,1.13069,0.908686,3.25273,-0.1336,0,%,1,12.1
-0.4,nGrid,32,downskin,"Downward-facing overhang (> 45 deg)",%,11.7213,NaN,NaN,0.1174,0,points,1,12.1
-0.4,nGrid,32,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.271361,0.254483,0.296803,0.0105,0.02116,abs,1,12.1
-0.4,nGrid,32,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12711,1.12484,1.1293,0.06758,0.198,%,1,12.1
-0.4,nGrid,32,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,12.1
-0.4,nGrid,32,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.553566,0.550678,0.554468,0.0009359,0.001895,abs,1,12.1
-0.4,nGrid,32,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58177,1.58101,1.58249,0.05579,0.04682,%,1,12.1
-0.4,nGrid,32,k2_loops,"Min-bending lines (k2): share forming closed loops",%,66.6667,54.1667,79.1667,2.083,12.5,points,1,12.1
-0.4,nGrid,32,turning_radius,"Bending lines: sideways turning radius",mm,5.39412,5.25663,5.50154,-0.3921,2.261,%,1,12.1
-0.4,nGrid,32,twist_pitch,"Bending lines: twist pitch",mm,8.5353,7.99643,9.209,3.296,7.337,%,1,12.1
-0.4,nGrid,32,handedness,"Handedness index",-1..+1,0.101913,0.0837427,0.119652,-0.009737,0.01795,abs,1,12.1
-0.4,nGrid,32,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.934601,0.929284,0.938074,0.001482,0.004395,abs,1,12.1
-0.4,nGrid,32,asym_memory,"Zero-bending lines: direction memory",mm,7.50159,6.82444,8.2839,1.673,9.89,%,1,12.1
-0.4,nGrid,32,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.170958,NaN,NaN,-0.007196,0,abs,1,12.1
-0.4,nGrid,32,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,11.0434,NaN,NaN,0.2101,0,points,1,12.1
-0.4,nGrid,48,surface_bend_radius,"Typical surface bending radius",mm,1.13153,0.908756,3.3484,-0.05916,0,%,1,12.0
-0.4,nGrid,48,downskin,"Downward-facing overhang (> 45 deg)",%,11.6341,NaN,NaN,0.03016,0,points,1,12.0
-0.4,nGrid,48,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.267177,0.255352,0.286799,0.006317,0.01572,abs,1,12.0
-0.4,nGrid,48,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12707,1.12461,1.1295,0.06402,0.2172,%,1,12.0
-0.4,nGrid,48,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,12.0
-0.4,nGrid,48,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.553377,0.551516,0.554346,0.0007471,0.001415,abs,1,12.0
-0.4,nGrid,48,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58215,1.58132,1.58285,0.07931,0.04846,%,1,12.0
-0.4,nGrid,48,k2_loops,"Min-bending lines (k2): share forming closed loops",%,72.9167,60.4167,83.3333,8.333,11.46,points,1,12.0
-0.4,nGrid,48,turning_radius,"Bending lines: sideways turning radius",mm,5.41754,5.2185,5.60123,0.04037,3.534,%,1,12.0
-0.4,nGrid,48,twist_pitch,"Bending lines: twist pitch",mm,8.53894,7.93665,8.91,3.34,5.89,%,1,12.0
-0.4,nGrid,48,handedness,"Handedness index",-1..+1,0.102815,0.0811265,0.123381,-0.008834,0.02113,abs,1,12.0
-0.4,nGrid,48,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.935227,0.92917,0.938133,0.002109,0.004482,abs,1,12.0
-0.4,nGrid,48,asym_memory,"Zero-bending lines: direction memory",mm,7.66044,7.01323,8.42995,3.826,9.601,%,1,12.0
-0.4,nGrid,48,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.175191,NaN,NaN,-0.002962,0,abs,1,12.0
-0.4,nGrid,48,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.9074,NaN,NaN,0.07407,0,points,1,12.0
-0.4,nGrid,64,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,-0.04776,0,%,1,12.5
-0.4,nGrid,64,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,-0.01321,0,points,1,12.5
-0.4,nGrid,64,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.264595,0.251982,0.27206,0.003735,0.01004,abs,1,12.5
-0.4,nGrid,64,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12619,1.12404,1.12813,-0.01405,0.1815,%,1,12.5
-0.4,nGrid,64,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,12.5
-0.4,nGrid,64,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552886,0.551405,0.553698,0.0002563,0.001147,abs,1,12.5
-0.4,nGrid,64,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58202,1.58124,1.58269,0.07141,0.04576,%,1,12.5
-0.4,nGrid,64,k2_loops,"Min-bending lines (k2): share forming closed loops",%,66.6667,54.1667,81.25,2.083,13.54,points,1,12.5
-0.4,nGrid,64,turning_radius,"Bending lines: sideways turning radius",mm,5.2269,5.11205,5.50831,-3.48,3.659,%,1,12.5
-0.4,nGrid,64,twist_pitch,"Bending lines: twist pitch",mm,8.35409,8.0196,8.72652,1.103,4.278,%,1,12.5
-0.4,nGrid,64,handedness,"Handedness index",-1..+1,0.114744,0.0980011,0.130742,0.003094,0.01637,abs,1,12.5
-0.4,nGrid,64,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.93273,0.928896,0.937852,-0.0003889,0.004478,abs,1,12.5
-0.4,nGrid,64,asym_memory,"Zero-bending lines: direction memory",mm,7.55221,6.93838,8.22119,2.359,8.693,%,1,12.5
-0.4,nGrid,64,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.181085,NaN,NaN,0.002932,0,abs,1,12.5
-0.4,nGrid,64,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.7818,NaN,NaN,-0.05148,0,points,1,12.5
-0.4,nGrid,96,surface_bend_radius,"Typical surface bending radius",mm,1.1322,0.907994,3.33216,0,0,%,1,12.7
-0.4,nGrid,96,downskin,"Downward-facing overhang (> 45 deg)",%,11.6039,NaN,NaN,0,0,points,1,12.7
-0.4,nGrid,96,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.26086,0.254586,0.275823,0,0.01062,abs,1,12.7
-0.4,nGrid,96,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12635,1.12435,1.12879,0,0.1974,%,1,12.7
-0.4,nGrid,96,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,12.7
-0.4,nGrid,96,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.55263,0.549486,0.554092,0,0.002303,abs,1,12.7
-0.4,nGrid,96,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58089,1.58027,1.58164,0,0.04312,%,1,12.7
-0.4,nGrid,96,k2_loops,"Min-bending lines (k2): share forming closed loops",%,64.5833,50,77.0833,0,13.54,points,1,12.7
-0.4,nGrid,96,turning_radius,"Bending lines: sideways turning radius",mm,5.41535,5.23294,5.59749,0,3.366,%,1,12.7
-0.4,nGrid,96,twist_pitch,"Bending lines: twist pitch",mm,8.26293,7.96384,8.87508,0,5.514,%,1,12.7
-0.4,nGrid,96,handedness,"Handedness index",-1..+1,0.11165,0.0967153,0.129894,0,0.01659,abs,1,12.7
-0.4,nGrid,96,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.933119,0.928718,0.937484,0,0.004383,abs,1,12.7
-0.4,nGrid,96,asym_memory,"Zero-bending lines: direction memory",mm,7.37815,6.77415,8.06171,0,8.725,%,1,12.7
-0.4,nGrid,96,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.178153,NaN,NaN,0,0,abs,1,12.7
-0.4,nGrid,96,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.8333,NaN,NaN,0,0,points,1,12.7
-0.4,stepScale,2,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,8.6
-0.4,stepScale,2,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,8.6
-0.4,stepScale,2,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.264582,0.25186,0.272384,-6.855e-05,0.01026,abs,1,8.6
-0.4,stepScale,2,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12643,1.1244,1.12912,0.02336,0.2096,%,1,8.6
-0.4,stepScale,2,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,8.6
-0.4,stepScale,2,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552879,0.550896,0.55398,-3.187e-05,0.001542,abs,1,8.6
-0.4,stepScale,2,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58137,1.58028,1.58237,0.06036,0.06605,%,1,8.6
-0.4,stepScale,2,k2_loops,"Min-bending lines (k2): share forming closed loops",%,66.6667,54.1667,79.1667,0,12.5,points,1,8.6
-0.4,stepScale,2,turning_radius,"Bending lines: sideways turning radius",mm,5.21051,5.02725,5.53851,-0.6352,4.875,%,1,8.6
-0.4,stepScale,2,twist_pitch,"Bending lines: twist pitch",mm,8.32506,7.99951,8.75064,-0.4977,4.489,%,1,8.6
-0.4,stepScale,2,handedness,"Handedness index",-1..+1,0.116398,0.0957284,0.13428,0.001752,0.01928,abs,1,8.6
-0.4,stepScale,2,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.932783,0.928852,0.938267,0.0001196,0.004708,abs,1,8.6
-0.4,stepScale,2,asym_memory,"Zero-bending lines: direction memory",mm,7.55429,6.95452,8.25507,0.02643,8.61,%,1,8.6
-0.4,stepScale,2,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.181085,NaN,NaN,0,0,abs,1,8.6
-0.4,stepScale,2,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.7818,NaN,NaN,0,0,points,1,8.6
-0.4,stepScale,1,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,13.2
-0.4,stepScale,1,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,13.2
-0.4,stepScale,1,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.264595,0.251925,0.272573,-5.562e-05,0.01032,abs,1,13.2
-0.4,stepScale,1,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12619,1.12382,1.12889,0.002124,0.2252,%,1,13.2
-0.4,stepScale,1,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,13.2
-0.4,stepScale,1,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552886,0.551338,0.55383,-2.497e-05,0.001246,abs,1,13.2
-0.4,stepScale,1,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58202,1.58127,1.58277,0.1017,0.04765,%,1,13.2
-0.4,stepScale,1,k2_loops,"Min-bending lines (k2): share forming closed loops",%,66.6667,54.1667,79.1667,0,12.5,points,1,13.2
-0.4,stepScale,1,turning_radius,"Bending lines: sideways turning radius",mm,5.2269,5.09966,5.4359,-0.3226,3.206,%,1,13.2
-0.4,stepScale,1,twist_pitch,"Bending lines: twist pitch",mm,8.35409,7.9608,8.75587,-0.1508,4.751,%,1,13.2
-0.4,stepScale,1,handedness,"Handedness index",-1..+1,0.114744,0.0959687,0.132297,9.789e-05,0.01816,abs,1,13.2
-0.4,stepScale,1,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.93273,0.928633,0.937852,6.622e-05,0.00461,abs,1,13.2
-0.4,stepScale,1,asym_memory,"Zero-bending lines: direction memory",mm,7.55221,6.91496,8.28932,-0.001125,9.099,%,1,13.2
-0.4,stepScale,1,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.181085,NaN,NaN,0,0,abs,1,13.2
-0.4,stepScale,1,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.7818,NaN,NaN,0,0,points,1,13.2
-0.4,stepScale,0.5,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,18.9
-0.4,stepScale,0.5,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,18.9
-0.4,stepScale,0.5,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.26465,0.251999,0.272331,0,0.01017,abs,1,18.9
-0.4,stepScale,0.5,k1_memory,"Max-bending lines (k1): direction memory",mm,1.12617,1.124,1.1287,0,0.2084,%,1,18.9
-0.4,stepScale,0.5,k1_loops,"Max-bending lines (k1): share forming closed loops",%,0,0,0,0,0,points,1,18.9
-0.4,stepScale,0.5,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552911,0.550964,0.553947,0,0.001492,abs,1,18.9
-0.4,stepScale,0.5,k2_memory,"Min-bending lines (k2): direction memory",mm,1.58041,1.5797,1.58121,0,0.0479,%,1,18.9
-0.4,stepScale,0.5,k2_loops,"Min-bending lines (k2): share forming closed loops",%,66.6667,54.1667,79.1667,0,12.5,points,1,18.9
-0.4,stepScale,0.5,turning_radius,"Bending lines: sideways turning radius",mm,5.24382,5.12582,5.51228,0,3.685,%,1,18.9
-0.4,stepScale,0.5,twist_pitch,"Bending lines: twist pitch",mm,8.3667,7.94722,8.81149,0,5.165,%,1,18.9
-0.4,stepScale,0.5,handedness,"Handedness index",-1..+1,0.114646,0.0976039,0.132746,0,0.01757,abs,1,18.9
-0.4,stepScale,0.5,asym_straightness,"Zero-bending lines: straightness over 1 cell",0-1,0.932663,0.928591,0.937945,0,0.004677,abs,1,18.9
-0.4,stepScale,0.5,asym_memory,"Zero-bending lines: direction memory",mm,7.5523,6.89909,8.2843,0,9.171,%,1,18.9
-0.4,stepScale,0.5,asym_imbalance,"Zero-bending families imbalance",-1..+1,0.181085,NaN,NaN,0,0,abs,1,18.9
-0.4,stepScale,0.5,bend_dir_vertical,"Max-bending direction near vertical (< 30 deg)",%,10.7818,NaN,NaN,0,0,points,1,18.9
+0.4,nSeeds,12,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,5.3
+0.4,nSeeds,12,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,5.3
+0.4,nSeeds,12,curv_change_length,"Curvature-change length",mm,8.60976,NaN,NaN,0,0,%,1,5.3
+0.4,nSeeds,12,turning_radius,"Bending lines: sideways turning radius",mm,4.44399,NaN,NaN,0,0,%,1,5.3
+0.4,nSeeds,12,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.278468,0.246534,0.294819,0.01612,0.02414,abs,0,5.3
+0.4,nSeeds,12,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.549318,0.547971,0.552149,-0.003141,0.002089,abs,1,5.3
+0.4,nSeeds,12,handedness,"Handedness index",-1..+1,0.100455,0.0670374,0.134489,-0.0153,0.03373,abs,0,5.3
+0.4,nSeeds,24,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,6.6
+0.4,nSeeds,24,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,6.6
+0.4,nSeeds,24,curv_change_length,"Curvature-change length",mm,8.60976,NaN,NaN,0,0,%,1,6.6
+0.4,nSeeds,24,turning_radius,"Bending lines: sideways turning radius",mm,4.44399,NaN,NaN,0,0,%,1,6.6
+0.4,nSeeds,24,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.271259,0.263916,0.280757,0.008909,0.008421,abs,1,6.6
+0.4,nSeeds,24,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.551259,0.548851,0.553394,-0.0012,0.002272,abs,1,6.6
+0.4,nSeeds,24,handedness,"Handedness index",-1..+1,0.105463,0.0765594,0.128215,-0.01029,0.02583,abs,0,6.6
+0.4,nSeeds,48,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,8.5
+0.4,nSeeds,48,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,8.5
+0.4,nSeeds,48,curv_change_length,"Curvature-change length",mm,8.60976,NaN,NaN,0,0,%,1,8.5
+0.4,nSeeds,48,turning_radius,"Bending lines: sideways turning radius",mm,4.44399,NaN,NaN,0,0,%,1,8.5
+0.4,nSeeds,48,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.264595,0.251982,0.272306,0.002244,0.01016,abs,1,8.5
+0.4,nSeeds,48,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552886,0.551405,0.553962,0.0004274,0.001278,abs,1,8.5
+0.4,nSeeds,48,handedness,"Handedness index",-1..+1,0.114744,0.098208,0.13136,-0.001008,0.01658,abs,1,8.5
+0.4,nSeeds,96,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,12.8
+0.4,nSeeds,96,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,12.8
+0.4,nSeeds,96,curv_change_length,"Curvature-change length",mm,8.60976,NaN,NaN,0,0,%,1,12.8
+0.4,nSeeds,96,turning_radius,"Bending lines: sideways turning radius",mm,4.44399,NaN,NaN,0,0,%,1,12.8
+0.4,nSeeds,96,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.253666,0.246534,0.263916,-0.008684,0.008691,abs,1,12.8
+0.4,nSeeds,96,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552345,0.550712,0.553631,-0.0001144,0.001459,abs,1,12.8
+0.4,nSeeds,96,handedness,"Handedness index",-1..+1,0.125371,0.113047,0.13888,0.009619,0.01292,abs,1,12.8
+0.4,nSeeds,160,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,17.7
+0.4,nSeeds,160,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,17.7
+0.4,nSeeds,160,curv_change_length,"Curvature-change length",mm,8.60976,NaN,NaN,0,0,%,1,17.7
+0.4,nSeeds,160,turning_radius,"Bending lines: sideways turning radius",mm,4.44399,NaN,NaN,0,0,%,1,17.7
+0.4,nSeeds,160,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.26235,0.255249,0.269574,0,0.007162,abs,1,17.7
+0.4,nSeeds,160,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552459,0.55075,0.553537,0,0.001394,abs,1,17.7
+0.4,nSeeds,160,handedness,"Handedness index",-1..+1,0.115752,0.10694,0.1256,0,0.00933,abs,1,17.7
+0.4,nGrid,32,surface_bend_radius,"Typical surface bending radius",mm,1.13069,0.908686,3.25273,-0.1336,0,%,1,8.6
+0.4,nGrid,32,downskin,"Downward-facing overhang (> 45 deg)",%,11.7213,NaN,NaN,0.1174,0,points,1,8.6
+0.4,nGrid,32,curv_change_length,"Curvature-change length",mm,8.84618,NaN,NaN,2.414,0,%,1,8.6
+0.4,nGrid,32,turning_radius,"Bending lines: sideways turning radius",mm,4.55039,NaN,NaN,2.057,0,%,1,8.6
+0.4,nGrid,32,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.271361,0.256389,0.294323,0.0105,0.01897,abs,1,8.6
+0.4,nGrid,32,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.553566,0.550029,0.554322,0.0009359,0.002146,abs,1,8.6
+0.4,nGrid,32,handedness,"Handedness index",-1..+1,0.101913,0.0813323,0.120939,-0.009737,0.0198,abs,1,8.6
+0.4,nGrid,48,surface_bend_radius,"Typical surface bending radius",mm,1.13153,0.908756,3.3484,-0.05916,0,%,1,8.6
+0.4,nGrid,48,downskin,"Downward-facing overhang (> 45 deg)",%,11.6341,NaN,NaN,0.03016,0,points,1,8.6
+0.4,nGrid,48,curv_change_length,"Curvature-change length",mm,8.67251,NaN,NaN,0.4032,0,%,1,8.6
+0.4,nGrid,48,turning_radius,"Bending lines: sideways turning radius",mm,4.47186,NaN,NaN,0.2958,0,%,1,8.6
+0.4,nGrid,48,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.267177,0.255352,0.286799,0.006317,0.01572,abs,1,8.6
+0.4,nGrid,48,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.553377,0.551587,0.554578,0.0007471,0.001496,abs,1,8.6
+0.4,nGrid,48,handedness,"Handedness index",-1..+1,0.102815,0.0819702,0.125712,-0.008834,0.02187,abs,1,8.6
+0.4,nGrid,64,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,-0.04776,0,%,1,8.7
+0.4,nGrid,64,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,-0.01321,0,points,1,8.7
+0.4,nGrid,64,curv_change_length,"Curvature-change length",mm,8.60976,NaN,NaN,-0.3233,0,%,1,8.7
+0.4,nGrid,64,turning_radius,"Bending lines: sideways turning radius",mm,4.44399,NaN,NaN,-0.3292,0,%,1,8.7
+0.4,nGrid,64,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.264595,0.251925,0.27206,0.003735,0.01007,abs,1,8.7
+0.4,nGrid,64,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552886,0.551405,0.553962,0.0002563,0.001278,abs,1,8.7
+0.4,nGrid,64,handedness,"Handedness index",-1..+1,0.114744,0.0973716,0.131603,0.003094,0.01712,abs,1,8.7
+0.4,nGrid,96,surface_bend_radius,"Typical surface bending radius",mm,1.1322,0.907994,3.33216,0,0,%,1,9.4
+0.4,nGrid,96,downskin,"Downward-facing overhang (> 45 deg)",%,11.6039,NaN,NaN,0,0,points,1,9.4
+0.4,nGrid,96,curv_change_length,"Curvature-change length",mm,8.63769,NaN,NaN,0,0,%,1,9.4
+0.4,nGrid,96,turning_radius,"Bending lines: sideways turning radius",mm,4.45867,NaN,NaN,0,0,%,1,9.4
+0.4,nGrid,96,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.26086,0.255001,0.278782,0,0.01189,abs,1,9.4
+0.4,nGrid,96,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.55263,0.549945,0.5537,0,0.001877,abs,1,9.4
+0.4,nGrid,96,handedness,"Handedness index",-1..+1,0.11165,0.0949127,0.128574,0,0.01683,abs,1,9.4
+0.4,stepScale,2,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,6.1
+0.4,stepScale,2,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,6.1
+0.4,stepScale,2,curv_change_length,"Curvature-change length",mm,8.60976,NaN,NaN,0,0,%,1,6.1
+0.4,stepScale,2,turning_radius,"Bending lines: sideways turning radius",mm,4.44399,NaN,NaN,0,0,%,1,6.1
+0.4,stepScale,2,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.264582,0.253355,0.272384,-6.855e-05,0.009514,abs,1,6.1
+0.4,stepScale,2,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552879,0.551028,0.553988,-3.187e-05,0.00148,abs,1,6.1
+0.4,stepScale,2,handedness,"Handedness index",-1..+1,0.116398,0.0985587,0.13245,0.001752,0.01695,abs,1,6.1
+0.4,stepScale,1,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,8.8
+0.4,stepScale,1,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,8.8
+0.4,stepScale,1,curv_change_length,"Curvature-change length",mm,8.60976,NaN,NaN,0,0,%,1,8.8
+0.4,stepScale,1,turning_radius,"Bending lines: sideways turning radius",mm,4.44399,NaN,NaN,0,0,%,1,8.8
+0.4,stepScale,1,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.264595,0.251591,0.27206,-5.562e-05,0.01023,abs,1,8.8
+0.4,stepScale,1,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552886,0.551405,0.553916,-2.497e-05,0.001255,abs,1,8.8
+0.4,stepScale,1,handedness,"Handedness index",-1..+1,0.114744,0.0980957,0.1328,9.789e-05,0.01735,abs,1,8.8
+0.4,stepScale,0.5,surface_bend_radius,"Typical surface bending radius",mm,1.13166,0.907924,3.31144,0,0,%,1,14.0
+0.4,stepScale,0.5,downskin,"Downward-facing overhang (> 45 deg)",%,11.5907,NaN,NaN,0,0,points,1,14.0
+0.4,stepScale,0.5,curv_change_length,"Curvature-change length",mm,8.60976,NaN,NaN,0,0,%,1,14.0
+0.4,stepScale,0.5,turning_radius,"Bending lines: sideways turning radius",mm,4.44399,NaN,NaN,0,0,%,1,14.0
+0.4,stepScale,0.5,k1_straightness,"Max-bending lines (k1): straightness over 1 cell",0-1,0.26465,0.251999,0.272112,0,0.01006,abs,1,14.0
+0.4,stepScale,0.5,k2_straightness,"Min-bending lines (k2): straightness over 1 cell",0-1,0.552911,0.551632,0.553947,0,0.001158,abs,1,14.0
+0.4,stepScale,0.5,handedness,"Handedness index",-1..+1,0.114646,0.0978545,0.132124,0,0.01713,abs,1,14.0

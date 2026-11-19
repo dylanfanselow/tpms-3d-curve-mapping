@@ -42,7 +42,7 @@ function [D, perCurve] = tpms_curve_descriptors(fld, t, C, opt)
 %   See LICENSE in the repository root for the full license text.
 
 isLoC = any(strcmp(C(1).family, {'k1','k2'}));
-L     = fld.period;
+L     = tpms_period3(fld.period);
 fam   = C(1).family;
 
 pool = struct('kg',[],'kn',[],'tg',[],'kappa',[],'tau',[],'w',[], ...
@@ -166,7 +166,7 @@ if c.closed
     nrep = ceil(Wmax/Lc) + 1;
     xx = x; ss = s;
     for k = 1:nrep
-        xx = [xx; x(2:end,:) + k*L*c.translation]; %#ok<AGROW>
+        xx = [xx; x(2:end,:) + k*L.*c.translation]; %#ok<AGROW>
         ss = [ss; s(2:end) + k*Lc];                %#ok<AGROW>
     end
     s0all = s(1:end-1);

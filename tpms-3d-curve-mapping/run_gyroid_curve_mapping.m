@@ -45,9 +45,17 @@ cfg.latticeType  = 'sheet';        % 'sheet' (solid -t<F<t) or 'network' (solid 
 cfg.buildDir     = [0 0 1];        % build / print direction for alignment descriptors
 
 cfg.nGrid        = 64;             % marching-cubes grid for quadrature points (per cell edge)
-cfg.nSeeds       = 96;             % seeds per curve family (see run_sampling_study: ~100 for most summary
-                                   % numbers to +-3%; twist pitch / zero-bending memory need ~300-450)
-cfg.families     = {'k1','k2','asym+','asym-'};
+cfg.nSeeds       = 48;             % seeds per curve family. Enough for the core set (sampling study:
+                                   % <= 35 needed); raise to ~100-450 for precise EXTENDED curve metrics
+cfg.families     = {'k1','k2','asym+','asym-'};   % {'k1','k2'} halves run time; the asymptotic
+                                   % families only feed EXTENDED descriptors
+cfg.descriptorSet      = 'core';  % 'core': 5 lean curvature metrics as PCA inputs and in the summary
+                                   % (curvature gradient, pooled geodesic curvature, k1/k2 straightness,
+                                   % handedness); every other descriptor is still computed and kept in
+                                   % gyroid_curve_descriptors_long.csv with role EXTENDED.
+                                   % 'full': every descriptor as a PCA input, as in v0.3.
+cfg.coreBuildAlignment = false;   % true: add build-direction alignment of the max-bending direction
+                                   % to the core set (useful if print orientation matters)
 
 % tracer (all lengths in radians; one cell = 2*pi)
 cfg.h0           = 0.05;
@@ -104,6 +112,10 @@ cfg.makePlots    = true;
 cfg.figVisible   = 'off';
 
 rng(1);   % seeding is deterministic anyway; this fixes the validation sample points
+
+if ~any(strcmpi(cfg.descriptorSet, {'core', 'full'}))
+    error('cfg.descriptorSet must be ''core'' or ''full'' (got ''%s'').', cfg.descriptorSet);
+end
 
 %% ---------------------------- fields ------------------------------------
 fprintf('Building analytic fields (%s)...\n', cfg.derivMethod);

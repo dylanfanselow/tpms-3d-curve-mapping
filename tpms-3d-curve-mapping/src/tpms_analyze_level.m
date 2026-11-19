@@ -14,6 +14,17 @@ function R = tpms_analyze_level(fld, t, cfg)
 %     'REFERENCE'  point-based k1, k2, H, K -- same as the STL tool, kept for
 %                  the analytic-vs-STL comparison (build step 2)
 %     'CONTEXT'    geometry context (areas, fractions)
+%     'EXTENDED'   valid descriptor left out of the lean core set (cfg.descriptorSet =
+%                  'core', the default); still computed and written to the long table
+%
+%   CORE SET (cfg.descriptorSet = 'core'): the PCA inputs are
+%     field_gradH        mean-curvature gradient (surface field)
+%     field_kg_LoC       geodesic curvature of both line-of-curvature families, pooled
+%     curve_k1_straight  straightness of k1-lines over one cell
+%     curve_k2_straight  straightness of k2-lines over one cell
+%     handedness_LoC     signed share of twisting length (chirality)
+%   plus field_d1_build if cfg.coreBuildAlignment is true.
+%   cfg.descriptorSet = 'full' restores every PCA-role descriptor.
 %
 %   Units: coordinates are radians (cell = 2*pi) unless cfg.cellSize is given,
 %   in which case every descriptor is converted to physical units of that length.
@@ -53,6 +64,8 @@ addD('field_kg_asymP', 'field', 'asym+', 'PCA', 1, abs(G.kgAp), wA, '|geodesic c
 addD('field_kg_asymM', 'field', 'asym-', 'PCA', 1, abs(G.kgAm), wA, '|geodesic curvature| of asym- field (Liouville)');
 addD('field_d1_build', 'field', 'k1', 'PCA', 0, abs(G.d1*b.'), wU, '|cos| angle between d1 and build direction');
 addD('field_d2_build', 'field', 'k2', 'PCA', 0, abs(G.d2*b.'), wU, '|cos| angle between d2 and build direction');
+addD('field_kg_LoC', 'field', 'k1+k2', 'PCA', 1, [abs(G.kg1); abs(G.kg2)], [wU; wU], ...
+     '|geodesic curvature| of both line-of-curvature families, pooled (Codazzi)');
 addD('ref_k1', 'field', '', 'REFERENCE', 1, G.k1, S.w, 'point-based (same as STL tool)');
 addD('ref_k2', 'field', '', 'REFERENCE', 1, G.k2, S.w, 'point-based (same as STL tool)');
 addD('ref_H',  'field', '', 'REFERENCE', 1, G.H,  S.w, 'point-based (same as STL tool)');
@@ -84,7 +97,7 @@ for f = 1:numel(fams)
     else
         allowed = G.gap > 2*opt.umbExcl & G.K < -2*opt.parExcl;
     end
-    si = tpms_seed_points(S.v, cfg.nSeeds, allowed);
+    si = tpms_seed_points(S.v, cfg.nSeeds, allowed, [], fld.period);
     if isempty(si)
         addS([key '_nCurves'], 'CONTEXT', 0, 'no valid seeds (field undefined on this surface)');
         continue
@@ -131,7 +144,37 @@ for f = 1:numel(fams)
     R.acc.(key)      = struct('lags', D.acLags, 'sum', D.acSum, 'cnt', D.acCnt);
 end
 
+% handedness of the lines of curvature, as a single PCA value
+pcs = [];
+for fk = {'k1', 'k2'}
+    if isfield(R.perCurve, fk{1}) && ~isempty(R.perCurve.(fk{1})), pcs = [pcs, R.perCurve.(fk{1})]; end %#ok<AGROW>
+end
+if ~isempty(pcs)
+    addS('handedness_LoC', 'PCA', sum([pcs.tau_wsign])/sum([pcs.wsum]), ...
+         'share of line-of-curvature length twisting + minus share twisting - (-1..+1)');
+end
+
+% ---- core / full descriptor set ------------------------------------------------
+if isfield(cfg, 'descriptorSet') && ~isempty(cfg.descriptorSet), ds = lower(cfg.descriptorSet); else, ds = 'core'; end
+core = {'field_gradH', 'field_kg_LoC', 'curve_k1_straight', 'curve_k2_straight', 'handedness_LoC'};
+if isfield(cfg, 'coreBuildAlignment') && cfg.coreBuildAlignment, core{end+1} = 'field_d1_build'; end
+switch ds
+    case 'core'
+        for i = 1:numel(desc)
+            if strcmp(desc(i).role, 'PCA') && ~any(strcmp(desc(i).name, core)), desc(i).role = 'EXTENDED'; end
+        end
+        for i = 1:numel(scal)
+            if strcmp(scal(i).role, 'PCA') && ~any(strcmp(scal(i).name, core)), scal(i).role = 'EXTENDED'; end
+        end
+    case 'full'
+        i = find(strcmp({desc.name}, 'field_kg_LoC'));       % duplicates the split k1/k2 fields
+        desc(i).role = 'EXTENDED';
+    otherwise
+        error('tpms_analyze_level:descriptorSet', 'cfg.descriptorSet must be ''core'' or ''full''.');
+end
+
 R.t = t; R.S = S; R.G = G; R.opt = opt; R.desc = desc; R.scalars = scal; R.lambda = lam;
+R.descriptorSet = ds;
 end
 
 % -------------------------------------------------------------------------

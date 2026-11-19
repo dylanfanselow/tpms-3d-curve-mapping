@@ -1,8 +1,14 @@
-function fld = tpms_build_fields(tpmsType, method)
+function fld = tpms_build_fields(spec, method)
 %TPMS_BUILD_FIELDS  Analytic derivative fields of a TPMS level-set function.
 %
 %   fld = tpms_build_fields('gyroid')             % Symbolic Toolbox + matlabFunction
 %   fld = tpms_build_fields('gyroid', 'manual')   % hand-derived (independent cross-check)
+%   fld = tpms_build_fields('neovius')            % any key from tpms_library
+%   fld = tpms_build_fields(struct('key','my_tpms','expr','cos(x)+cos(y)+cos(z)'))
+%
+%   spec is a tpms_library key, a tpms_library entry, or any struct with
+%   fields key and expr (MATLAB syntax in x, y, z). 'manual' exists only for
+%   the gyroid; every other surface uses the symbolic route.
 %
 %   The surface is the level set  F0(x,y,z) = t  (t is supplied later, so one
 %   field struct serves every level-set value). Coordinates are in radians;
@@ -22,21 +28,25 @@ function fld = tpms_build_fields(tpmsType, method)
 %   See LICENSE in the repository root for the full license text.
 
 if nargin < 2 || isempty(method), method = 'symbolic'; end
-tpmsType = lower(tpmsType);
-if ~strcmp(tpmsType, 'gyroid')
-    error('tpms_build_fields:type', ...
-        'Only ''gyroid'' is implemented in this iteration (got ''%s'').', tpmsType);
+if ischar(spec), spec = tpms_library(spec); end
+if ~isstruct(spec) || ~isfield(spec, 'expr') || ~isfield(spec, 'key')
+    error('tpms_build_fields:spec', 'spec must be a tpms_library key or a struct with fields key and expr.');
 end
 
-fld.type   = tpmsType;
+fld.type   = lower(spec.key);
 fld.method = lower(method);
 fld.period = 2*pi;
-fld.expr   = 'sin(x)*cos(y) + sin(y)*cos(z) + sin(z)*cos(x)';
+fld.expr   = spec.expr;
+if isfield(spec, 'period') && ~isempty(spec.period)   % non-cubic cell (optional)
+    fld.period = spec.period(:).';
+end
+if strcmp(fld.method, 'manual') && ~strcmp(fld.type, 'gyroid')
+    error('tpms_build_fields:manual', '''manual'' derivatives exist only for the gyroid; use ''symbolic''.');
+end
 
 switch fld.method
     case 'symbolic'
-        syms x y z real
-        F = sin(x)*cos(y) + sin(y)*cos(z) + sin(z)*cos(x);
+        [F, x, y, z] = parseExpr(spec.expr);
         v = [x y z];
         g = [diff(F,x), diff(F,y), diff(F,z)];
         H = [diff(g(1),x), diff(g(2),y), diff(g(3),z), ...
@@ -60,6 +70,14 @@ switch fld.method
     otherwise
         error('tpms_build_fields:method', 'Unknown method ''%s''.', method);
 end
+end
+
+% -------------------------------------------------------------------------
+function [F, x, y, z] = parseExpr(expr)
+% Evaluate the expression string with only x, y, z (real symbols) in scope.
+syms x y z real
+F = eval(expr);
+if ~isa(F, 'sym'), F = sym(F); end
 end
 
 % -------------------------------------------------------------------------

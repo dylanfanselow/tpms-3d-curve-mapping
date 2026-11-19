@@ -1,0 +1,59 @@
+function L = tpms_library_noncubic(key)
+%TPMS_LIBRARY_NONCUBIC  Level-set lattices with non-cubic repeating cells (add-on).
+%
+%   L = tpms_library_noncubic()    entries with the same fields as tpms_library,
+%   plus  period  [Px Py Pz] (the repeating box, radians; x period 2*pi = cell
+%   size a) and  cell  ('tetragonal', 'hexagonal (orthohexagonal box)').
+%   tpms_library_all merges them with the cubic library; the cubic library and
+%   every cubic result are unchanged by this file.
+%
+%   Equations are written in Cartesian (physical) coordinates so all geometry is
+%   exact; a box that is longer along an axis appears as a scaled argument
+%   (e.g. cos(z/1.5) for c/a = 1.5).
+%
+%   Sources:
+%     [S21] M. Seeber (supervised by G. Schroeder-Turk), "Accuracy and Limits of
+%           Nodal Surface Approximations of the Lonsdaleite Minimal Surface",
+%           AMSI Vacation Research Scholarship report (2021). Fourier approximation
+%           in an orthohexagonal cell a x a*sqrt(3) x c; c/a = 1.6331/2.6667... taken
+%           from the report's Surface Evolver file (crysta = 1.6331, crystc = 2.6667).
+%           The report cautions that its Lonsdaleite models did not all agree.
+%     [FK88] W. Fischer, E. Koch, "On 3-periodic minimal surfaces with non-cubic
+%           symmetry", Z. Kristallogr. 183 (1988) 129-152 (tP, tD, tG families).
+%     tP, tD and tG are genus-3 deformation families of P, D and G [FK88], so
+%     their literature genus per primitive cell is 3.
+%     The tetragonal entries are the cubic nodal approximations placed in a cell
+%     stretched along z (c/a = 1.5): members of the tP/tD/tG families as commonly
+%     modelled in AM ("elongated" TPMS), not fitted to the exact minimal surfaces.
+
+r  = sqrt(8/3);              % c/a of the Lonsdaleite (ideal hcp ratio = 1.633)
+ca = 1.5;                    % c/a chosen for the tetragonal examples
+Y  = '(y/sqrt(3))'; Z = sprintf('(z/%.15g)', r); Zt = sprintf('(z/%g)', ca);
+E = @(key, name, expr, kind, period, cell_, ref, note, g) struct('key', key, 'name', name, ...
+    'expr', expr, 'kind', kind, 'symmetry', '', 'genusRef', g, 'ref', ref, 'note', note, ...
+    'duplicateOf', '', 'period', period, 'cell', cell_);
+
+L = [ ...
+E('lonsdaleite', 'Lonsdaleite (hexagonal)', ...
+  strrep(strrep(['-0.36*cos(2*ZZ) + 0.22*cos(2*YY) + 0.23*sin(2*YY)*sin(ZZ) + 0.45*cos(x)*cos(YY) ' ...
+   '- 0.45*cos(x)*sin(YY)*sin(ZZ) + 0.21*cos(x)*cos(3*YY)*cos(2*ZZ)'], 'YY', Y), 'ZZ', Z), ...
+  'minimal', 2*pi*[1 sqrt(3) r], 'hexagonal (orthohexagonal box)', '[S21] (P6_3/mmc)', ...
+  'orthohexagonal box holds two hexagonal cells; report notes its models did not all agree', NaN), ...
+E('tp_15', 'Schwarz tP (c/a = 1.5)', sprintf('cos(x) + cos(y) + cos(%s)', Zt), ...
+  'minimal', 2*pi*[1 1 ca], 'tetragonal', '[FK88] tP family; P nodal form in a stretched cell', ...
+  'family member at the chosen c/a', 3), ...
+E('td_15', 'Schwarz tD (c/a = 1.5)', strrep(['sin(x)*sin(y)*sin(ZZ) + sin(x)*cos(y)*cos(ZZ) + ' ...
+   'cos(x)*sin(y)*cos(ZZ) + cos(x)*cos(y)*sin(ZZ)'], 'ZZ', Zt), ...
+  'minimal', 2*pi*[1 1 ca], 'tetragonal', '[FK88] tD family; D nodal form in a stretched cell', ...
+  'family member at the chosen c/a', 3), ...
+E('tg_15', 'Gyroid tG (c/a = 1.5)', strrep('sin(x)*cos(y) + sin(y)*cos(ZZ) + sin(ZZ)*cos(x)', 'ZZ', Zt), ...
+  'minimal', 2*pi*[1 1 ca], 'tetragonal', '[FK88] tG family; G nodal form in a stretched cell', ...
+  'family member at the chosen c/a', 3) ...
+];
+
+if nargin >= 1 && ~isempty(key)
+    i = find(strcmpi({L.key}, key), 1);
+    if isempty(i), error('tpms_library_noncubic:key', 'Unknown entry ''%s''.', key); end
+    L = L(i);
+end
+end

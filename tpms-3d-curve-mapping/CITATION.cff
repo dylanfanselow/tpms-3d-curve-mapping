@@ -9,12 +9,12 @@ abstract: >-
   direction memory, loop closure, geodesic curvature, torsion and handedness),
   together with wall thickness, solid fraction and surface-to-volume ratio as
   functions of the level-set value, and lattice Wagner and inverse Damkohler
-  numbers for electroplating.
+  numbers for electroplating, and a 58-lattice TPMS library mapping including non-cubic cells.
 type: software
 authors:
   - family-names: "YOUR-FAMILY-NAME"
     given-names: "YOUR-GIVEN-NAME"
-version: 0.3.0
+version: 0.6.0
 license: GPL-3.0-or-later
 repository-code: "https://github.com/dylanfanselow/tpms-3d-curve-mapping"
 keywords:
@@ -27,3 +27,4 @@ keywords:
   - lines of curvature
   - MATLAB
   - electroplating
+  - TPMS library
